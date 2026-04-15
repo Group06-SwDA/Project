@@ -15,3 +15,7 @@
 ### 2026-04-12
 
 - Started reviewing the Backstage documentation.
+
+### 2026-04-15
+- Took some notes on the documentation.
+- Continued reviewing the documentation.
