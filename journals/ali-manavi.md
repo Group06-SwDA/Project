@@ -15,4 +15,4 @@
 
 ### 2026-04-15
 * Initialized `ali-manavi.md` for project tracking
-* Created a high-level summary of Backstage core functionality
+
