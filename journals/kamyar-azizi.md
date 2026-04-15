@@ -13,3 +13,7 @@
 ### 2026-04-12
 
 - Started reading the documentation
+
+### 2026-04-14
+
+- Analyzed the Software Cataloge feature
