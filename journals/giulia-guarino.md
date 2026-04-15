@@ -12,3 +12,8 @@
 - Created journal `giulia-guarino.md`
 
 - Started reading and analysing the _Backstage_ documentation.
+
+### 2026-04-15
+
+- Read documentation and took some notes.
+- Installed and configured _Backstage_ to familiarize with it. 
