@@ -17,3 +17,8 @@
 ### 2026-04-14
 
 - Analyzed the Software Cataloge feature
+
+### 2026-04-16
+
+- Drafted a concise summary of the Backstage system
+- Deployed a local instance of Backstage to explore its core functionalities
