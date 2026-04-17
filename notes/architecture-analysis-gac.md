@@ -1,5 +1,6 @@
 # Architecture
-(** File done following the original docs, to check the actual code to see if they correspond**)
+(** File done following the original docs, to check the actual code to see if they correspond **)
+check this chat to undestand how to use fitness functions on typescript to assert architecture correctness https://gemini.google.com/share/d060632099ce
 ## Plugin Architecture
 
 Three different Forms 
