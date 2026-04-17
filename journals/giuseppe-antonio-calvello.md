@@ -20,3 +20,9 @@
 ### 2026-04-15
 - Took some notes on the documentation.
 - Continued reviewing the documentation.
+
+### 2026-04-17
+- Team meeting: decided how to organize the project inspection.
+    - Divided the team roles for the project inspection.
+    - Assigned to the architecture analisis.
+- Analysis of the architectural pattern declared in the documantation, specifically the  plugin architecture part.
