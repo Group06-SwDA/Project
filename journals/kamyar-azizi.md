@@ -22,3 +22,8 @@
 
 - Drafted a concise summary of the Backstage system
 - Deployed a local instance of Backstage to explore its core functionalities
+
+### 2026-04-17
+
+- Team meeting: discussed the overall project scope and divided tasks among team members. I was assigned to analyze the design aspects of the system.
+- Began reviewing the project’s data dependencies at the package level
