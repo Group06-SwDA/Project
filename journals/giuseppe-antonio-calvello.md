@@ -1,3 +1,4 @@
+
 # Project Activity Log: Backstage
 
 ## Author: Stefano Alverino
@@ -20,12 +21,8 @@
 - Took some notes on the documentation.
 - Continued reviewing the documentation.
 
-### 2026-04-16
-
-- Finished high level doc review
-
 ### 2026-04-17
-
-- Meeting to review document notes taken by the entire team and to divide subtasks
-- Began organizing the design working group
-- Researched tools for commit scraping to analyze knowledge dependencies
+- Team meeting: decided how to organize the project inspection.
+    - Divided the team roles for the project inspection.
+    - Assigned to the architecture analisis.
+- Analysis of the architectural pattern declared in the documantation, specifically the  plugin architecture part.
