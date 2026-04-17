@@ -15,6 +15,6 @@
 - contributing to the research and refinement of the task distribution for our team project to ensure a clearer and fairer division of work.
 - reviewing the architecture requirements and summarized the main points for my teammates.
 
-### 2026-04-16
+### 2026-04-17
 
 - Team meeting: dividing the project tasks among team members and sharing our research and understanding of Backstage’s details.
