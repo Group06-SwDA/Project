@@ -19,3 +19,13 @@
 ### 2026-04-15
 - Took some notes on the documentation.
 - Continued reviewing the documentation.
+
+### 2026-04-16
+
+- Finished high level doc review
+
+### 2026-04-17
+
+- Meeting to review document notes taken by the entire team and to divide subtasks
+- Began organizing the design working group
+- Researched tools for commit scraping to analyze knowledge dependencies
