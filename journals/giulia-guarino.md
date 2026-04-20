@@ -17,3 +17,7 @@
 
 - Read documentation and took some notes.
 - Installed and configured _Backstage_ to familiarize with it. 
+
+### 2026-04-17
+
+- Discussed with team memebers about how to divide the load.
