@@ -20,4 +20,10 @@
 
 ### 2026-04-17
 
-- Discussed with team memebers about how to divide the load.
+- Discussed with team members about how to divide the load.
+
+### 2026-04-20
+
+- Created folder `Reports`.
+- Created file `Overview.md`.
+- Started writing the overview.
