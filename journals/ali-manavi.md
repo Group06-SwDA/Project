@@ -15,4 +15,7 @@
 
 ### 2026-04-15
 * Initialized `ali-manavi.md` for project tracking
-
+### 2026-04-17
+*Team meeting: Finalized task assignments and conducted an initial review of the project structure.
+* Shared individual research notes and preliminary findings with the team to align our analysis strategy.
+* Started exploring the codebase to understand the high-level organization of Backstage packages.
