@@ -21,4 +21,4 @@
 
 ### 2026-04-21
 
-- DInitiated work on the Level 1 Context and Level 2 Container diagrams. Still in the process of reviewing and refining the connections.
+- Initiated work on the Level 1 Context and Level 2 Container diagrams. Still in the process of reviewing and refining the connections.
