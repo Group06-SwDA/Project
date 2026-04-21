@@ -17,3 +17,13 @@
 
 - Read documentation and took some notes.
 - Installed and configured _Backstage_ to familiarize with it. 
+
+### 2026-04-17
+
+- Discussed with team members about how to divide the load.
+
+### 2026-04-20
+
+- Created folder `Reports`.
+- Created file `Overview.md`.
+- Started writing the overview.
