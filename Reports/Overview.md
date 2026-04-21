@@ -58,10 +58,17 @@ They aid the creation of Backstage components. Generally templates consist of ma
 Each run of a template is identified by a unique ID. Templates are stored in Software Catalog. Once many templates are created, _ScaffolderPage_ can be customised to group and filter certain templates.
 
 ### Tech Docs
-They are markdown files written by engineers to provide code documentation. It is a docs-like-code solution directly built into Backstage. Starting from markdown files _TechDocs Generator_ transforms them into static HTML files which are stored by _TechDocs Publisher_ in a storage system. The files are integrated in the Backstage UI using _TechDocs Reader_
+They are markdown files written by engineers to provide code documentation. It is a docs-like-code solution directly built into Backstage. Starting from markdown files _TechDocs Generator_ transforms them into static HTML files which are stored by _TechDocs Publisher_ in a storage system. The files are integrated in the Backstage UI using _TechDocs Reader_.     
 
 ### Search
+It is not a search engine but provides an interface between Backstage and an actual search engine such as _ElasticSearch_, _Lunr_, _Postgres_. 
+It is used to look for components in the Backstage ecosystem. It is possible to personalize both search page composition and search results view thanks to many search components that can be used in both contexts.   
+Through _Collators_ ,which are readable object streams, it is possible to define what can be searched. One collator defines and collects documents of a type which have to conform to a minimum set of fields. 
+_Decorators_ allow to give extra information about the searched components. It is also used for adding, removing and filtering documents and their metadata at index-time. The index is rebuilt on a schedule which can be different for each collator.
+
 ### Kubernetes
+It allows admins to check their services' status on a local host or in production.
+
 ### Frontend
 
 ### Backend
