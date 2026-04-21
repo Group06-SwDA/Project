@@ -41,3 +41,21 @@
 
 - Developed a concise summary of the package dependencies to support a clearer understanding of the system architecture.
 - Created a personal working branch to manage and push changes.
+
+- #### Module Dependency Analysis
+
+- Performed circular dependency analysis across the repository using Madge:
+
+```bash
+npx madge --extensions ts,tsx --circular .
+```
+
+- Identified circular dependency chains across multiple packages, highlighting areas of tight coupling within the codebase.
+- Conducted module-level dependency extraction for the main application package:
+
+```bash
+npx madge packages/app/src --json > module-dependencies.json
+```
+
+- Exported the resulting module dependency graph into a structured JSON file (module-dependencies.json) for further analysis and documentation purposes.
+- Pushed existing files to my personal branch and merged the branch into main.
