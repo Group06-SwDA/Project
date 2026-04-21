@@ -27,3 +27,16 @@
 
 - Team meeting: discussed the overall project scope and divided tasks among team members. I was assigned to analyze the design aspects of the system.
 - Began reviewing the project’s data dependencies at the package level
+
+### 2026-04-19
+
+- Conducted an analysis of the project’s package dependencies and documented their structure and relationships.
+- Created the Package Dependencies file
+
+### 2026-04-20
+
+- Initiated research into automated approaches for analyzing large-scale codebases, focusing on tools and methods to efficiently extract dependency information.
+
+### 2026-04-21
+
+- Developed a concise summary of the package dependencies to support a clearer understanding of the system architecture.
