@@ -1,0 +1,48 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for Backstage
+
+' Users carried over from L1 [cite: 1057]
+Person(developer, "Developer", "Builds and owns services.")
+Person(platform_eng, "Platform Engineer", "Configures and extends portal.")
+Person(eng_manager, "Engineering Manager", "Monitors teams and services.")
+
+' External Systems carried over from L1 [cite: 1057]
+System_Ext(source_control, "Source Control", "GitHub / GitLab")
+System_Ext(cicd, "CI/CD System", "Jenkins / Actions")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS")
+System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth")
+System_Ext(object_storage, "Object Storage", "S3 / GCS / Azure. Stores TechDocs assets.")
+
+' System Boundary [cite: 1063]
+System_Boundary(backstage_boundary, "Backstage System") {
+    Container(frontend, "Frontend SPA", "React, TypeScript", "Renders the portal UI in the user's browser.")
+    
+    ' Merged Backend Container [cite: 1053, 1061]
+    Container(app_backend, "App Backend", "Node.js, Express", "Core API and plugin host (Catalog, Scaffolder, TechDocs, Search). Handles logic and proxies.")
+    
+    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Stores software catalog entities, tasks, and documentation indexes.")
+    ContainerDb(cache, "Cache Store", "Redis / Memory", "Reduces backend latency for frequent entity lookups.")
+}
+
+' User Interactions 
+Rel(developer, frontend, "Uses portal", "HTTPS")
+Rel(platform_eng, frontend, "Manages plugins", "HTTPS")
+Rel(eng_manager, frontend, "Views metrics", "HTTPS")
+
+' Internal Interactions with explicit protocols [cite: 1080, 1085]
+Rel(frontend, app_backend, "Makes API calls", "JSON/HTTPS")
+Rel(app_backend, db, "Reads from and writes to", "SQL/TCP")
+Rel(app_backend, cache, "Caches frequently accessed data", "Redis/TCP")
+
+' External Interactions with explicit protocols [cite: 1080, 1083]
+Rel(app_backend, idp, "Authenticates users", "OAuth2/HTTPS")
+Rel(app_backend, source_control, "Fetches info and creates repos", "REST API/HTTPS")
+Rel(app_backend, cicd, "Fetches pipeline status", "REST API/HTTPS")
+Rel(app_backend, cloud_infra, "Queries cluster state", "REST API/HTTPS")
+Rel(app_backend, object_storage, "Reads/Writes docs", "REST API/HTTPS")
+
+@enduml
