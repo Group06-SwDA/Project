@@ -1,0 +1,85 @@
+@startuml c4_knowledge_dependencies
+!include <C4/C4_Container>
+
+LAYOUT_WITH_LEGEND()
+
+title Knowledge dependencies di Backstage - vista C4 Container
+
+System_Boundary(cluster_1, "Cluster Louvain #1 (854 file)") {
+    Container(packages_cli, "cli", "TypeScript / monorepo", "packages/cli - 237 file modificati")
+    Container(packages_frontend_plugin_api, "frontend-plugin-api", "TypeScript / monorepo", "packages/frontend-plugin-api - 90 file modificati")
+    Container(packages_frontend_app_api, "frontend-app-api", "TypeScript / monorepo", "packages/frontend-app-api - 52 file modificati")
+    Container(packages_config_loader, "config-loader", "TypeScript / monorepo", "packages/config-loader - 42 file modificati")
+    Container(packages_core_api, "core-api", "TypeScript / monorepo", "packages/core-api - 45 file modificati")
+    Container(packages_backend_plugin_api, "backend-plugin-api", "TypeScript / monorepo", "packages/backend-plugin-api - 38 file modificati")
+    Container(packages_core_app_api, "core-app-api", "TypeScript / monorepo", "packages/core-app-api - 47 file modificati")
+    Container(packages_backend_test_utils, "backend-test-utils", "TypeScript / monorepo", "packages/backend-test-utils - 24 file modificati")
+    Container(packages_core, "core", "TypeScript / monorepo", "packages/core - 51 file modificati")
+    Container(plugins_auth_backend, "auth-backend", "TypeScript / monorepo", "plugins/auth-backend - 98 file modificati")
+    Container(packages_backend_app_api, "backend-app-api", "TypeScript / monorepo", "packages/backend-app-api - 46 file modificati")
+    Container(plugins_events_backend, "events-backend", "TypeScript / monorepo", "plugins/events-backend - 16 file modificati")
+    Container(packages_test_utils, "test-utils", "TypeScript / monorepo", "packages/test-utils - 17 file modificati")
+    Container(scripts, "scripts", "TypeScript / monorepo", "scripts - 15 file modificati")
+    Container(packages_docgen, "docgen", "TypeScript / monorepo", "packages/docgen - 7 file modificati")
+    Container(plugins_auth_node, "auth-node", "TypeScript / monorepo", "plugins/auth-node - 15 file modificati")
+    Container(packages_cli_node, "cli-node", "TypeScript / monorepo", "packages/cli-node - 14 file modificati")
+}
+
+System_Boundary(cluster_0, "Cluster Louvain #0 (351 file)") {
+    Container(packages_canon, "canon", "TypeScript / monorepo", "packages/canon - 138 file modificati")
+    Container(packages_ui, "ui", "TypeScript / monorepo", "packages/ui - 122 file modificati")
+    Container(canon_docs, "canon-docs", "TypeScript / monorepo", "canon-docs - 45 file modificati")
+    Container(docs_ui, "docs-ui", "TypeScript / monorepo", "docs-ui - 30 file modificati")
+    Container(plugins_app, "app", "TypeScript / monorepo", "plugins/app - 16 file modificati")
+}
+
+System_Boundary(cluster_8, "Cluster Louvain #8 (222 file)") {
+    Container(plugins_catalog_backend, "catalog-backend", "TypeScript / monorepo", "plugins/catalog-backend - 222 file modificati")
+}
+
+System_Boundary(cluster_6, "Cluster Louvain #6 (141 file)") {
+    Container(plugins_scaffolder, "scaffolder", "TypeScript / monorepo", "plugins/scaffolder - 141 file modificati")
+}
+
+System_Boundary(cluster_2, "Cluster Louvain #2 (75 file)") {
+    Container(plugins_catalog_react, "catalog-react", "TypeScript / monorepo", "plugins/catalog-react - 75 file modificati")
+}
+
+' --- inter-package couplings ---
+Rel_Neighbor(packages_canon, packages_ui, "coupling=2141", "7298 archi file")
+Rel_Neighbor(packages_cli, packages_frontend_plugin_api, "coupling=1893", "6526 archi file")
+Rel_Neighbor(canon_docs, packages_canon, "coupling=1860", "6210 archi file")
+Rel_Neighbor(packages_cli, packages_frontend_app_api, "coupling=1130", "3882 archi file")
+Rel_Neighbor(packages_cli, packages_config_loader, "coupling=1100", "3779 archi file")
+Rel_Neighbor(packages_cli, packages_core_api, "coupling=832", "2852 archi file")
+Rel_Neighbor(docs_ui, packages_canon, "coupling=743", "2500 archi file")
+Rel_Neighbor(canon_docs, packages_ui, "coupling=698", "2379 archi file")
+Rel_Neighbor(packages_cli, packages_core_app_api, "coupling=593", "2064 archi file")
+Rel_Neighbor(packages_backend_test_utils, packages_cli, "coupling=587", "2021 archi file")
+Rel_Neighbor(packages_backend_plugin_api, packages_cli, "coupling=566", "1957 archi file")
+Rel_Neighbor(packages_cli, packages_core, "coupling=557", "1911 archi file")
+Rel_Neighbor(packages_cli, plugins_auth_backend, "coupling=479", "1688 archi file")
+Rel_Neighbor(packages_cli, plugins_events_backend, "coupling=454", "1548 archi file")
+Rel_Neighbor(packages_frontend_app_api, packages_frontend_plugin_api, "coupling=433", "1487 archi file")
+Rel_Neighbor(packages_backend_app_api, packages_cli, "coupling=407", "1409 archi file")
+Rel_Neighbor(packages_config_loader, packages_frontend_plugin_api, "coupling=363", "1253 archi file")
+Rel_Neighbor(docs_ui, packages_ui, "coupling=327", "1115 archi file")
+Rel_Neighbor(packages_cli, scripts, "coupling=325", "1117 archi file")
+Rel_Neighbor(packages_cli, packages_test_utils, "coupling=323", "1123 archi file")
+Rel_Neighbor(packages_canon, plugins_app, "coupling=323", "1099 archi file")
+Rel_Neighbor(packages_cli, packages_docgen, "coupling=293", "998 archi file")
+Rel_Neighbor(packages_core_api, packages_frontend_plugin_api, "coupling=289", "994 archi file")
+Rel_Neighbor(packages_cli, plugins_auth_node, "coupling=267", "923 archi file")
+Rel_Neighbor(packages_cli, packages_cli_node, "coupling=246", "843 archi file")
+Rel_Neighbor(canon_docs, docs_ui, "coupling=241", "810 archi file")
+Rel_Neighbor(packages_cli, plugins_catalog_react, "coupling=234", "810 archi file")
+Rel_Neighbor(packages_config_loader, packages_frontend_app_api, "coupling=223", "769 archi file")
+Rel_Neighbor(packages_backend_plugin_api, packages_frontend_plugin_api, "coupling=220", "763 archi file")
+Rel_Neighbor(packages_frontend_plugin_api, plugins_auth_backend, "coupling=215", "754 archi file")
+Rel_Neighbor(packages_core_app_api, packages_frontend_plugin_api, "coupling=209", "728 archi file")
+Rel_Neighbor(packages_backend_test_utils, packages_frontend_plugin_api, "coupling=205", "706 archi file")
+Rel_Neighbor(packages_core, packages_frontend_plugin_api, "coupling=179", "618 archi file")
+Rel_Neighbor(packages_core_api, packages_frontend_app_api, "coupling=167", "571 archi file")
+Rel_Neighbor(packages_config_loader, packages_core_api, "coupling=163", "558 archi file")
+
+@enduml
