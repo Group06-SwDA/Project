@@ -67,11 +67,22 @@ Through _Collators_ ,which are readable object streams, it is possible to define
 _Decorators_ allow to give extra information about the searched components. It is also used for adding, removing and filtering documents and their metadata at index-time. The index is rebuilt on a schedule which can be different for each collator.
 
 ### Kubernetes
-It allows admins to check their services' status on a local host or in production.
+It allows developers to check their services' status on a local host or in production directly to Backstage.
 
 ### Frontend
+The app does not have any direct functionality except the one of wiring the things together.
+![](./img/frontend.svg)<br>
+>The schema shows how blocks interact with eachother.
+
+Extensions allow the instantiation and visualization of the app.
+Each one of them is attached to a parent which may have more than one child. The app builds an _app extension tree_ which is a single tree that keeps all extensions together. There are also extension overrides which are high priority extensions and allow to override individual extensions or install new ones. Through _Utility APIs_ it is easier to build plugins. They are implemented by extensions that are provided. 
+Only the App knows Plugins URLs and resolves routes so that plugins do not have to know URLs to call eachother. 
 
 ### Backend
+Like the frontend, it does not have any direct functionality except the one of wiring the things together.
+![](./img/backend.svg)<br>
+>The diagram shows how blocks interact with eachother.
 
+It is possible to implement more than one backend deployments depending on the need to isolate or scale individual features.
 
 ## Basic Code Statistics
