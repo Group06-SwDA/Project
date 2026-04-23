@@ -1,0 +1,49 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for Backstage
+
+' People 
+Person(developer, "Developer", "Builds and owns services.")
+Person(platform_eng, "Platform Engineer", "Configures and extends the portal.")
+Person(eng_manager, "Engineering Manager", "Monitors teams and services.")
+
+' External Systems 
+System_Ext(source_control, "Source Control", "GitHub / GitLab. Stores source code and catalog-info.yaml files.")
+System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions. Executes build and deployment pipelines.")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP. Runs the actual services and workloads.")
+System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth. Manages user authentication and group resolution.")
+System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores pre-built TechDocs HTML assets. Treated as external because it is a third-party managed service not deployed as part of Backstage.")
+
+' System Boundary
+System_Boundary(backstage_boundary, "Backstage System") {
+
+    Container(frontend, "Frontend SPA", "React, TypeScript", "Single-Page Application running in the user's browser. Hosts all frontend plugins: Catalog UI, Scaffolder UI, TechDocs reader, Kubernetes dashboard, and Search.")
+
+    Container(app_backend, "App Backend", "Node.js, Express, TypeScript", "Server-side runtime that hosts all backend plugins as isolated modules (Catalog, Scaffolder, TechDocs, Search, Auth, Proxy). Each plugin owns its own REST route prefix.")
+
+    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Persistent storage for all Backstage data. Each backend plugin owns a separate logical database for isolation (e.g., catalog, scaffolder, auth, search).")
+
+    ContainerDb(cache, "Cache Store", "Redis", "Distributed cache used by backend plugins to reduce latency for frequent lookups. Each plugin has its own logically isolated cache namespace.")
+}
+
+' User Interactions
+Rel(developer, frontend, "Uses portal", "HTTPS")
+Rel(platform_eng, frontend, "Manages plugins and configuration", "HTTPS")
+Rel(eng_manager, frontend, "Views service and team health", "HTTPS")
+
+' Internal Interactions
+Rel(frontend, app_backend, "Makes API calls to all backend plugins", "JSON / HTTPS")
+Rel(app_backend, db, "Reads from and writes to (via Knex ORM)", "SQL / TCP")
+Rel(app_backend, cache, "Caches frequently accessed data (via Keyv)", "Redis / TCP")
+
+' External Interactions
+Rel(app_backend, idp, "Authenticates users and resolves groups", "OAuth2 / HTTPS")
+Rel(app_backend, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
+Rel(app_backend, cicd, "Fetches build and pipeline status", "REST API / HTTPS")
+Rel(app_backend, cloud_infra, "Queries cluster state", "REST API / HTTPS")
+Rel(app_backend, object_storage, "Reads and writes TechDocs HTML assets", "REST API / HTTPS")
+
+@enduml
