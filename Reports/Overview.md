@@ -83,6 +83,43 @@ Like the frontend, it does not have any direct functionality except the one of w
 ![](./img/backend.svg)<br>
 >The diagram shows how blocks interact with eachother.
 
-It is possible to implement more than one backend deployments depending on the need to isolate or scale individual features.
+It is possible to implement more than one backend deployments depending on the need to isolate or scale individual features. Plugins do not communicate with eachother directly so each plugin can be considered as a microservice. Services provide a simpler plugin implementation. It is possible to override services to customize them. Like services Extension Points are a way to extend plugins but they are provided by Plugins or modules themselves.
+Modules aim to add features using extension points. Each module can use extension points belonging to only one plugin.
+The code is organised using NPM packages.
+
 
 ## Basic Code Statistics
+### Contributors 
+To count the number of project contibutors it's been used: 
+```
+bash
+git shortlog -sn | wc -l
+```
+>2349.
+### Languages
+![](./img/code.png)
+
+
+Using _tokei_ with this command gives the following output which is the total amount of files, lines of code without comments and blanks.
+
+```bash
+tokei .
+```
+![](./img/sum.png)
+
+Using the following command the output is just the application code without documentation, infrastructure and configuration.
+```bash 
+tokei . -t TypeScript,TSX,CSS,Handlebars,JavaScript,Sass,JSX,Mustache,HTML
+```
+![](./img/pure_code.png)
+
+Considering Markdown, PlanText and MDX as documentation; JSON, YAML, Shell, PowerShell, HCL,PAN, Dockerfile and Makefile as configuration and infrastructure the ratios are the following:
+
+![](./img/chart.png)
+
+Using the following command to find the number of packages except external dependencies. 
+
+```bash
+find . -name "package.json" -not -path "*/node_modules/*" | wc -l
+```
+>253
