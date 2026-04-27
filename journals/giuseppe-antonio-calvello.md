@@ -26,3 +26,18 @@
     - Divided the team roles for the project inspection.
     - Assigned to the architecture analisis.
 - Analysis of the architectural pattern declared in the documantation, specifically the  plugin architecture part.
+
+### 2026-04-23 
+- Read documentation in the collaborate folder to understand the structure to follow in the project
+
+### 2026-04-26
+- Started reading files into ./docs/architecture-decisions/
+- They're mostly coding conventions, so I've selected the ones important to the study of the architecture
+- Started writing a report about ADRs also mapping them to the associate C4 level, given the infos in the files
+
+### 2026-04-26
+- Continued writing report about ADRs
+
+
+
+
