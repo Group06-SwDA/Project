@@ -59,3 +59,12 @@ npx madge packages/app/src --json > module-dependencies.json
 
 - Exported the resulting module dependency graph into a structured JSON file (module-dependencies.json) for further analysis and documentation purposes.
 - Pushed existing files to my personal branch and merged the branch into main.
+
+### 2026-04-23
+
+- Had a short team meeting to check everyone’s progress and what they were working on.
+
+### 2026-04-25
+
+- Developed a script named `extract-structural` to extract structural dependencies from the codebase.
+- Generated `structural-deps.json`, containing the extracted structural dependency data.
