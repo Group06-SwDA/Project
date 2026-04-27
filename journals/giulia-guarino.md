@@ -33,3 +33,11 @@
 - Working on `Overview.md`: added some diagrams and completed up to Tech Docs.
 - Created `img` folder to keep in it some images.
 - Created branch `Overview`.
+
+### 2026-04-23
+
+- Working on `Overview.md`: updated some previous paragraphs, added frontend and started backend.
+
+### 2026-04-24
+
+- Finished writing the `Overview.md` using tokei to determine code statistics.

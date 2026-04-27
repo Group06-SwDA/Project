@@ -29,3 +29,26 @@
 - Meeting to review document notes taken by the entire team and to divide subtasks
 - Began organizing the design working group
 - Researched tools for commit scraping to analyze knowledge dependencies
+
+### 2026-04-19
+
+- Researched the best approach to extract data from git history
+- Designed the overall analysis pipeline
+- Implemented commit extraction and generated the raw dataset
+
+### 2026-04-20
+
+- Designed the data filtering strategy
+- Implemented filters to remove noise (merge commits, bots, non-code files)
+
+### 2026-04-21
+
+- Designed and implemented co-change analysis between files
+- Designed and implemented author coupling analysis
+
+### 2026-04-22
+
+- Designed and built the knowledge dependency graph
+- Applied Louvain clustering (chosen for scalability and ability to detect communities in large graphs)
+- Generated the final diagram
+- Started validating the correctness of the extracted data (ongoing)
