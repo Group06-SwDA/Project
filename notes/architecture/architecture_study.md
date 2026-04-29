@@ -2,7 +2,7 @@
 
 ## Author: Giuseppe Calvello
 
-### ./docs/contribute/project-structure.md
+# ./docs/contribute/project-structure.md
 
 Into this file I found the actual project structure.
 The project follows a monorepo setup ( is a version control strategy where code for multiple distinct projects, applications, or services—such as frontend, backend, and shared libraries—is hosted in a single repository). It is about code organization, not architecture.
@@ -110,16 +110,21 @@ Important finding: Backstage ADRs are mostly **coding conventions**, not structu
 ---
 
 **ADR005** — Catalog Core Entities
+
 - Standardized model → **interoperability** across org
 - `metadata.annotations` = escape hatch for **evolvability**
 
 **ADR014** — HTTP fetching
+
 - Standardized fetch usage → **observability**, consistent error handling across containers
 
 ---
 
 ## Critical Gap: What ADRs DON'T Cover
 
-Most architectural decisions live *outside* ADR folder. 
+Most architectural decisions live *outside* ADR folder.
 
 **Bottom line:** ADR005 + ADR009 + ADR011 are the three most architectural ADRs. Rest are style decisions useful only for SOLID section (OCP, ISP, SRP evidence).
+
+# .docs/overview/architecture-overview.md
+
