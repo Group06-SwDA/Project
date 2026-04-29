@@ -54,10 +54,13 @@
 - Started validating the correctness of the extracted data (ongoing)
 
 ### 2026-04-27
-- Finished data validation
+- Completed data validation
 
 ### 2026-04-28
-- Started researching design patterns
+- Meeting with Giulia to initiate design patterns analysis
+- Started design patterns research
+- Identified instances of the Facade and Strategy patterns
 
 ### 2026-04-29
-- Continuing design patterns research
+- Continued design patterns research
+- Identified instances of the Observer pattern and Fluent Builder pattern
