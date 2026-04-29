@@ -4,3 +4,5 @@ https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app
 https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx -- strategy func resolveTheme
 per vedere come funziona questo codice vedi https://chatgpt.com/share/69f0cc48-734c-83eb-8b84-6ec522985b0e
 
+https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx -- builder MOLTO INTERESSANTE
+
