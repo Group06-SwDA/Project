@@ -1,0 +1,53 @@
+{
+  "packages/app/package.json": [
+    "@backstage/app-defaults",
+    "@backstage/catalog-model",
+    "@backstage/config",
+    "@backstage/core-app-api",
+    "@backstage/core-components",
+    "@backstage/core-plugin-api",
+    "@backstage/frontend-app-api",
+    "@backstage/integration-react",
+    "@backstage/plugin-api-docs",
+    "@backstage/plugin-auth-react",
+    "@backstage/plugin-catalog",
+    "@backstage/plugin-catalog-common",
+    "@backstage/plugin-catalog-graph",
+    "@backstage/plugin-catalog-import",
+    "react",
+    "react-dom",
+    "react-router-dom",
+    "@material-ui/core"
+  ],
+  "packages/backend/package.json": [
+    "@backstage/backend-defaults",
+    "@backstage/backend-plugin-api",
+    "@backstage/catalog-model",
+    "@backstage/plugin-app-backend",
+    "@backstage/plugin-auth-backend",
+    "@backstage/plugin-auth-backend-module-github-provider",
+    "@backstage/plugin-auth-backend-module-guest-provider",
+    "@backstage/plugin-auth-node",
+    "@backstage/plugin-catalog-backend",
+    "@backstage/plugin-catalog-backend-module-openapi",
+    "@backstage/plugin-devtools-backend",
+    "@backstage/plugin-events-backend"
+  ],
+  "packages/catalog-model/package.json": [
+    "@backstage/errors",
+    "@backstage/types",
+    "ajv",
+    "lodash"
+  ],
+  "packages/backend-plugin-api/package.json": [
+    "@backstage/config",
+    "@backstage/errors",
+    "@backstage/plugin-auth-node",
+    "@backstage/plugin-permission-common",
+    "@backstage/plugin-permission-node",
+    "@backstage/types",
+    "knex",
+    "luxon",
+    "zod"
+  ]
+}
