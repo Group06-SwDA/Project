@@ -1,0 +1,79 @@
+@startuml
+
+start
+
+:Blobless clone of the Backstage repository;
+note right
+Clones only commit and tree objects,
+avoiding heavy blob downloads.
+This enables lightweight analysis
+of Git history.
+end note
+
+:01_extract_commits.py;
+note right
+Extracts one row for each pair:
+(commit, modified file) from git log.
+end note
+
+:02_filter_commits.py;
+note right
+Removes methodological noise:
+- merge commits
+- bots
+- oversized commits
+- non-code files
+- .changeset/*
+end note
+
+fork
+  :03_cochange_analysis.py;
+  note right
+  Computes logical coupling:
+  files changed together in the same commits.
+
+  Metrics:
+  - support
+  - confidence
+  - jaccard
+  end note
+fork again
+  :04_author_coupling.py;
+  note right
+  Computes socio-technical coupling:
+  files related because they are modified
+  by the same authors.
+
+  Metrics:
+  - jaccard_authors
+  - cosine_authors
+  end note
+end fork
+
+:05_build_graph.py;
+note right
+Combines co-change and author coupling
+into a weighted graph.
+
+Formula:
+w = 0.7 * jaccard_cochange
+  + 0.3 * cosine_authors
+
+Then applies Louvain algorithm
+to detect communities.
+end note
+
+:07_c4_diagram.py;
+note right
+Aggregates files at package level
+and generates a readable C4 view.
+
+Mapping:
+- Container = package
+- System_Boundary = Louvain community
+- Rel_Neighbor = coupling between packages
+end note
+
+stop
+
+@enduml
