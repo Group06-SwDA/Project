@@ -28,13 +28,13 @@ There is another classification of plugins according to their architecture:
 
 - Standalone: Run entirely in the browser and do not make API requests to other services. Once the plugin is added its informations are visible in the Backstage UI.
 <br>Below an example with Tech Radar Plugin.
-![](./img/standalone_plugins.jpeg)
+![](./Overview_img/standalone_plugins.jpeg)
 - Service Backend: they make API requests within the Backstage ecosystem, so Software Catalog is an example.
 <br>Below an example with Lighthouse Plugin.
-![](./img/servicebackend_plugins.jpeg)
+![](./Overview_img/servicebackend_plugins.jpeg)
 - Third-party Backend: they make API requests outside the Backstage ecosystem.
 <br>Below an example with CircleCI Plugin.
-![](./img/thirdpartybackend_plugins.jpeg) 
+![](./Overview_img/thirdpartybackend_plugins.jpeg) 
 
 ### Software Catalog 
 It helps to uniform components and makes all the software accessible.
@@ -50,7 +50,7 @@ Core entities are:
 - Components
 - APIs: implemented by components, they have different restriction levels.
 - Resources: are physical or virtual infrastructure that allow components to operate.
-![](./img/software_catalog_1_approx.svg)
+![](./Overview_img/software_catalog_1_approx.svg)
 
 
 ### Software Templates
@@ -71,7 +71,7 @@ It allows developers to check their services' status on a local host or in produ
 
 ### Frontend
 The app does not have any direct functionality except the one of wiring the things together.
-![](./img/frontend.svg)<br>
+![](./Overview_img/frontend.svg)<br>
 >The schema shows how blocks interact with eachother.
 
 Extensions allow the instantiation and visualization of the app.
@@ -80,7 +80,7 @@ Only the App knows Plugins URLs and resolves routes so that plugins do not have 
 
 ### Backend
 Like the frontend, it does not have any direct functionality except the one of wiring the things together.
-![](./img/backend.svg)<br>
+![](./Overview_img/backend.svg)<br>
 >The diagram shows how blocks interact with eachother.
 
 It is possible to implement more than one backend deployments depending on the need to isolate or scale individual features. Plugins do not communicate with eachother directly so each plugin can be considered as a microservice. Services provide a simpler plugin implementation. It is possible to override services to customize them. Like services Extension Points are a way to extend plugins but they are provided by Plugins or modules themselves.
@@ -97,7 +97,7 @@ git shortlog -sn | wc -l
 ```
 >2349.
 ### Languages
-![](./img/code.png)
+![](./Overview_img/code.png)
 
 
 Using _tokei_ with this command gives the following output which is the total amount of files, lines of code without comments and blanks.
@@ -105,17 +105,17 @@ Using _tokei_ with this command gives the following output which is the total am
 ```bash
 tokei .
 ```
-![](./img/sum.png)
+![](./Overview_img/sum.png)
 
 Using the following command the output is just the application code without documentation, infrastructure and configuration.
 ```bash 
 tokei . -t TypeScript,TSX,CSS,Handlebars,JavaScript,Sass,JSX,Mustache,HTML
 ```
-![](./img/pure_code.png)
+![](./Overview_img/pure_code.png)
 
 Considering Markdown, PlanText and MDX as documentation; JSON, YAML, Shell, PowerShell, HCL,PAN, Dockerfile and Makefile as configuration and infrastructure the ratios are the following:
 
-![](./img/chart.png)
+![](./Overview_img/chart.png)
 
 Using the following command to find the number of packages except external dependencies. 
 
