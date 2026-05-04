@@ -46,5 +46,5 @@
 - Meeting with Stefano to initiate design patterns analysis.
 - Started research and anlysis of some design patterns.
 
-### 2026-05-01 - 2026-04-01
-- Analysed the results of other members of the team to start writing `Software_Design.md`.
+### 2026-05-01 - 2026-05-04
+- Analysed the results of other members of the team to start writing `Software_Design.md`. 
