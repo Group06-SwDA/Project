@@ -65,3 +65,8 @@
 - Continued design patterns research
 - Identified instances of the Observer pattern and Fluent Builder pattern
 - Designed a workflow diagram illustrating the knowledge dependency analysis pipeline
+
+### 2026-05-04
+
+- Wrote explanations of design patterns
+- Created UML class diagrams to illustrate and explain the patterns
