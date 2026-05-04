@@ -1,0 +1,60 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Observable <<interface>> {
+  + subscribe()
+}
+
+class PublishSubject <<subject>> {
+  - subscribers: Set
+  - isClosed: boolean
+  --
+  + next(value: T)
+  + error(error: Error)
+  + complete()
+  + subscribe()
+}
+
+class BehaviorSubject <<subject>> {
+  - currentValue: T
+  - subscribers: Set
+  - isClosed: boolean
+  --
+  + next(value: T)
+  + error(error: Error)
+  + complete()
+  + subscribe()
+}
+
+class AppThemeSelector <<concrete subject>> {
+  - subject: BehaviorSubject<string | undefined>
+  - activeThemeId: string | undefined
+  - themes: AppTheme[]
+  --
+  + activeThemeId$(): Observable
+  + setActiveThemeId(themeId?): void
+  + getActiveThemeId(): string | undefined
+  + getInstalledThemes(): AppTheme[]
+  + {static} createWithStorage(): AppThemeSelector
+}
+
+class AppThemeProvider <<concrete observer>> {
+  --
+  + useObservable(activeThemeId$())
+}
+
+class localStorageSync <<concrete observer>> {
+  --
+  + subscribe callback
+  + storageListener
+}
+
+PublishSubject ..|> Observable
+BehaviorSubject ..|> Observable
+AppThemeSelector --> BehaviorSubject : owns
+AppThemeProvider --> AppThemeSelector : observes via activeThemeId$()
+localStorageSync --> AppThemeSelector : observes via activeThemeId$()
+
+@enduml

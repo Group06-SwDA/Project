@@ -1,0 +1,42 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class createDevApp <<director>> {
+  + createDevApp(): DevAppBuilder
+}
+
+class DevAppBuilder <<builder>> {
+  - plugins: BackstagePlugin[]
+  - apis: AnyApiFactory[]
+  - routes: JSX.Element[]
+  - sidebarItems: JSX.Element[]
+  - rootChildren: ReactNode[]
+  - themes: AppTheme[]
+  - signInProviders: SignInProviderConfig[]
+  - translationResources: TranslationResource[]
+  --
+  + registerPlugin(): DevAppBuilder
+  + registerApi(): DevAppBuilder
+  + addPage(): DevAppBuilder
+  + addThemes(): DevAppBuilder
+  + addSignInProvider(): DevAppBuilder
+  + addRootChild(): DevAppBuilder
+  + addTranslationResource(): DevAppBuilder
+  + build(): ComponentType
+  + render(): void
+}
+
+class DevApp <<product>> {
+  + AlertDisplay
+  + OAuthRequestDialog
+  + AppRouter
+  + SidebarPage
+  + FlatRoutes
+}
+
+createDevApp --> DevAppBuilder : instantiates
+DevAppBuilder --> DevApp : assembles via build()
+
+@enduml
