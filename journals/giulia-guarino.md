@@ -41,3 +41,10 @@
 ### 2026-04-24
 
 - Finished writing the `Overview.md` using tokei to determine code statistics.
+
+### 2026-04-28
+- Meeting with Stefano to initiate design patterns analysis.
+- Started research and anlysis of some design patterns.
+
+### 2026-05-01 - 2026-04-01
+- Analysed the results of other members of the team to start writing `Software_Design.md`.
