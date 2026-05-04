@@ -26,5 +26,17 @@
 ### 2026-04-23
 
 - Continued working on the Level 1 Context and Level 2 Container diagrams.
-
 - Met with my teammates and shared our updates.
+
+### 2026-04-30
+
+- Started working on the Clean Architecture section of the Backstage architecture report.
+
+### 2026-05-02
+
+- Reviewed the course material about Clean Architecture, focusing on the Dependency Rule and the separation between policies and implementation details.
+
+### 2026-05-04
+
+- Began checking how Backstage can be compared with Clean Architecture concepts.
+- Started identifying possible mappings between Clean Architecture layers and Backstage elements, such as catalog models, backend plugin logic, adapters, and infrastructure-related components.
