@@ -1,0 +1,40 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface AppThemeApi <<interface>> {
+  + getInstalledThemes(): AppTheme[]
+  + activeThemeId$(): Observable
+  + getActiveThemeId(): string | undefined
+  + setActiveThemeId(): void
+}
+
+class resolveTheme <<strategy>> {
+  + themeId: string | undefined
+  + shouldPreferDark: boolean
+  + themes: AppTheme[]
+  --
+  + execute(): AppTheme
+}
+
+class useShouldPreferDarkTheme <<helper>> {
+  - mediaQuery: MediaQueryList
+  --
+  + matches: boolean
+}
+
+class AppThemeProvider <<context>> {
+  - appThemeApi: AppThemeApi
+  - themeId: string | undefined
+  - shouldPreferDark: boolean
+  --
+  + render(): JSX.Element
+}
+
+AppThemeProvider --> AppThemeApi : uses
+AppThemeProvider --> resolveTheme : delegates theme selection to
+AppThemeProvider --> useShouldPreferDarkTheme : uses
+resolveTheme ..> AppThemeApi : reads installed themes from
+
+@enduml
