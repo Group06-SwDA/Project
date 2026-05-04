@@ -15,30 +15,93 @@ The end result is:
 
 ### Facade
 
-The first analized code is [`AppManager.tsx`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L161).
-It is a facade structural pattern and it is used to hide the complexity of the interactions between an interface and many types and functions.
-On [`types.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/types.ts#L306) is defined the `BackstageApp` interface  with methods getPlugins(), getSystemIcon(), createRoot(), getProvider(), getRouter() with which the client interacts. This interface is implemented on AppManager.tsx which is wiring private attributes and methods together without exposing them.
-For instance the consumer calls `createRoot()` which among other things indirectly calls a private method named [`getApiHolder`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L427-L523), which is longer and more complex than createRoot().
+[`AppManager.tsx`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L161) implements the [`BackstageApp`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/types.ts#L306) interface (defined in `types.ts`) wiring private attributes and methods together. For instance the consumer calls `createRoot()` which indirectly invokes the private method [`getApiHolder`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L427-L523), which is longer and more complex.
 
-![img](./Software_Deisgn_img/AppManager_facade.svg)
+![](./Software_Deisgn_img/AppManager_facade.svg)
+
+**Which classes play which role?**
+
+- **Facade**: `AppManager` implements `BackstageApp` and orchestrates all internal logic.
+- **Facade interface**: `BackstageApp` in `types.ts`
+
+**Why is the pattern used?**
+The internal wiring of a Backstage app involves many collaborators (API holders, plugins, providers, routers). Exposing them directly would force every consumer to understand and coordinate them. The facade keeps the public surface small and stable.
+
+**Which problem does it solve?**
+It solves tight coupling between clients and internal subsystems. Without the facade, adding or refactoring an internal component would require changes in every caller.
+
+**Alternative: Adapter**
+Adapter also wraps existing classes to give the client a different interface. The difference is that Adapter targets a pre-existing interface (e.g. to integrate a third-party class), while Facade designs a new simplified one for a whole subsystem.
+
+- *Pro*: useful when the wrapped class already has other users and must not be modified; no new API surface to design from scratch.
+- *Con*: adapts a single class, not a group of collaborators; requires a known target interface to adapt to; doesn't simplify the coordination of multiple subsystems into one entry point.
 
 ### Strategy
 
-The [`resolveTheme`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L23-L47) function in `AppThemeProvider.tsx` is a strategy behavioral pattern used to separate the theme selection algorithm from the component that applies it.
-[`AppThemeProvider`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L69) acts as the context: it calls `resolveTheme` passing `themeId`, `shouldPreferDark`, and the installed `themes`, without containing any selection logic itself. The strategy encapsulates a four-level fallback: match by explicit ID, prefer dark variant, fall back to light variant, fall back to the first available theme.
+[`AppThemeProvider`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L69) calls [`resolveTheme`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L23-L47) passing `themeId`, `shouldPreferDark`, and the installed `themes`. The strategy encapsulates a four-level fallback: match by explicit ID, prefer dark variant, fall back to light variant, fall back to the first available theme.
 
 ![](./Software_Deisgn_img/AppThemeProvider_strategy.svg)
 
+**Which classes play which role?**
+
+- **Context**: `AppThemeProvider`, delegates theme selection without knowing the algorithm.
+- **Strategy**: `resolveTheme`, the interchangeable algorithm encapsulating the four-level fallback logic.
+
+**Why is the pattern used?**
+Embedding the selection logic inside `AppThemeProvider` would mix UI rendering concerns with theme-resolution logic, making both harder to test and maintain independently.
+
+**Which problem does it solve?**
+It avoids a large conditional block inside the component and allows the selection algorithm to be replaced or tested in isolation, without touching the provider.
+
+**Alternative: Template Method**
+Template Method also separates a stable algorithm core from its variations, but via inheritance instead of composition: an abstract class defines the skeleton and subclasses override the variable steps.
+
+- *Pro*: simpler, no extra strategy interface or objects; the variation is handled at class definition time.
+- *Con*: static binding (the algorithm can't be swapped at runtime); each new selection rule requires a new subclass; inheritance is less flexible than passing a function.
+
 ### Builder
 
-[`DevAppBuilder`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L94) in `render.tsx` is a builder creational pattern that separates the step-by-step configuration of a dev application from its final assembly.
-Methods like `registerPlugin()`, `addPage()`, and `addThemes()` each populate private arrays and return `this`, enabling method chaining without producing any output. The actual React component tree is assembled only when [`build()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L215) is called; the factory function [`createDevApp()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L325) acts as the director by instantiating a fresh builder.
+[`DevAppBuilder`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L94) in `render.tsx` exposes methods like `registerPlugin()`, `addPage()`, and `addThemes()` that populate private arrays and return `this` for chaining. The React component tree is assembled only when [`build()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L215) is called; [`createDevApp()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L325) acts as director by instantiating a fresh builder.
 
 ![](./Software_Deisgn_img/DevAppBuilder_builder.svg)
 
+**Which classes play which role?**
+
+- **Builder**: `DevAppBuilder`, accumulates configuration through chainable methods (`registerPlugin`, `addPage`, `addThemes`).
+- **Director**: `createDevApp()`, instantiates a fresh builder and drives the construction sequence.
+
+**Why is the pattern used?**
+A dev app has many optional parts (plugins, pages, themes) that need to be composed incrementally. Forcing all configuration into a single constructor call would be unreadable and hard to extend.
+
+**Which problem does it solve?**
+It avoids a constructor with a large number of optional parameters and decouples the configuration phase from the construction phase: `build()` can enforce invariants once, rather than on every setter call.
+
+**Alternative: Abstract Factory**
+Abstract Factory also creates complex objects without exposing their concrete classes, but it produces families of related products in one shot rather than assembling a single object step by step.
+
+- *Pro*: good when several related objects must always be created together; no director or chaining API needed.
+- *Con*: all products are created at once, no incremental or conditional assembly; harder to enforce that certain steps happen before others; optional parts need extra factory variants.
+
 ### Observer
 
-The observer behavioral pattern is split across [`subjects.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts) and [`AppThemeSelector.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts): the former provides the reactive primitives, the latter uses them as a concrete subject.
-`subjects.ts` defines [`BehaviorSubject<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L123), which holds a `Set` of active subscribers and fans out each `next(value)` call to all of them; unlike [`PublishSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L31), it also replays the current value to any new subscriber. `AppThemeSelector` holds a private `BehaviorSubject` and exposes it read-only via [`activeThemeId$()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L78); when [`setActiveThemeId()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L85) is called it notifies all observers in one step.
+[`subjects.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts) defines [`BehaviorSubject<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L123), which holds a `Set` of active subscribers and fans out each `next(value)` to all of them, replaying the current value to any new subscriber (unlike [`PublishSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L31)). [`AppThemeSelector`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts) wraps a private `BehaviorSubject` exposed read-only via [`activeThemeId$()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L78): calling [`setActiveThemeId()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L85) notifies all observers: `useObservable` re-renders the UI and the observer in [`createWithStorage()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L30) persists the choice to `localStorage`.
 
 ![](./Software_Deisgn_img/AppThemeSelector_observer.svg)
+
+**Which classes play which role?**
+
+- **Subject**: `AppThemeSelector`, holds the state and exposes `activeThemeId$()` for subscription.
+- **Concrete observable**: `BehaviorSubject<T>` in `subjects.ts`, manages the subscriber set and fans out notifications; replays the current value to new subscribers.
+- **Observers**: `useObservable` in `AppThemeProvider` (re-renders the UI) and the storage callback in `createWithStorage()`
+
+**Why is the pattern used?**
+Two independent reactions (UI update and persistence) must happen whenever the active theme changes. The observer pattern lets both subscribe without `AppThemeSelector` knowing about either of them.
+
+**Which problem does it solve?**
+It decouples the source of a state change from everything that must react to it. Without the pattern, `setActiveThemeId()` would have to call the UI updater and the storage writer explicitly, creating direct dependencies on both.
+
+**Alternative: Command**
+Instead of observers subscribing dynamically, the subject could hold a list of Command objects that are explicitly invoked when the state changes, each encapsulating one reaction.
+
+- *Pro*: explicit and easy to trace; supports undo/redo and logging; no hidden notification chain.
+- *Con*: tight coupling between the subject and the specific commands it must invoke; no dynamic subscribe/unsubscribe; adding a new reaction requires modifying the subject's command list.
