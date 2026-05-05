@@ -44,7 +44,6 @@
 ### 2026-04-21
 
 - Designed and implemented co-change analysis between files
-- Designed and implemented author coupling analysis
 
 ### 2026-04-22
 
@@ -70,3 +69,9 @@
 
 - Wrote explanations of design patterns
 - Created UML class diagrams to illustrate and explain the patterns
+
+### 2026-05-05
+
+- Analyzed code dependencies with madge
+- Produced some graphs about code dependencies
+- Reviewed knowledge dependencies
