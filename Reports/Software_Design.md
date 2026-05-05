@@ -16,34 +16,17 @@ The end result is:
 ### Facade
 
 The first analized code is [`AppManager.tsx`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L161). 
-It'is a facade-structural pattern and it is used to hide the complexity of the interactions between an interface and many types and functions.
-On [`types.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/types.ts#L306) is defined the `BackstageApp` interface  with methods getPlugins(), getSystemIcon(), createRoot(), getProvider(), getRouter() with which the client interacts. This interface is implemented on AppManager.tsx which is wiring private attributes and methods together without exposing them to `createSpecializedApp`.
-This function is used by [`createApp`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app-defaults/src/createApp.tsx`#L36) which is called in [`App.tsx`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App.tsx).
+It'is a facade, a structural pattern, and it is used to hide the complexity of the interactions between an interface and many types and functions because exposing them  directly would force every consumer to understand and coordinate them. Without the facade, adding or refactoring an internal component would require changes in every caller.
+On [`types.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/types.ts#L306) is defined the `BackstageApp` interface  with methods getPlugins(), getSystemIcon(), createRoot(), getProvider(), getRouter() with which the client interacts. This interface is implemented on AppManager.tsx which is wiring private attributes and methods together without exposing them to the caller.
+The final consumer is [`App.tsx`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App.tsx) which instantiates the app through [`createApp`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app-defaults/src/createApp.tsx`#L36) which in turn calls `createSpecializedApp()`.
+
 For instance the consumer calls `createRoot()` which among other things indirectly calls a private method named [`getApiHolder()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppManager.tsx#L427-L523), which is longer and more complex than createRoot().
 
 ![](./Software_Deisgn_img/AppManager_facade.svg)
 There is not an efficient and clear alternative to this pattern. 
-It is possible to evaluate a Singleton to guarantee one single instance of the App and a builder to simplify its [`creation`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App.tsx#L132) but both alternatives wouldn't replace the facade pattern.
- 
- 
+It is possible to evaluate a Singleton to guarantee one single instance of the App and a builder to simplify its [`creation`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App.tsx#L132). Both alternatives address construction or instantiation concerns, but neither hides the internal complexity of the subsystem from the consumer, which is the core responsibility of the Facade.
 
-**Which classes play which role?**
-
-- **Facade**: `AppManager` implements `BackstageApp` and orchestrates all internal logic.
-- **Facade interface**: `BackstageApp` in `types.ts`
-
-**Why is the pattern used?**
-The internal wiring of a Backstage app involves many collaborators (API holders, plugins, providers, routers). Exposing them directly would force every consumer to understand and coordinate them. The facade keeps the public surface small and stable.
-
-**Which problem does it solve?**
-It solves tight coupling between clients and internal subsystems. Without the facade, adding or refactoring an internal component would require changes in every caller.
-
-**Alternative: Adapter**
-Adapter also wraps existing classes to give the client a different interface. The difference is that Adapter targets a pre-existing interface (e.g. to integrate a third-party class), while Facade designs a new simplified one for a whole subsystem.
-
-- *Pro*: useful when the wrapped class already has other users and must not be modified; no new API surface to design from scratch.
-- *Con*: adapts a single class, not a group of collaborators; requires a known target interface to adapt to; doesn't simplify the coordination of multiple subsystems into one entry point.
-
+__
 ### Strategy
 
 [`AppThemeProvider`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L69) calls [`resolveTheme`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L23-L47) passing `themeId`, `shouldPreferDark`, and the installed `themes`. The strategy encapsulates a four-level fallback: match by explicit ID, prefer dark variant, fall back to light variant, fall back to the first available theme.

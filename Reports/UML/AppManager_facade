@@ -23,7 +23,11 @@ class AppManager <<facade>> {
   - verifyPlugins()
 }
 
-class createSpecializedApp <<client>> {
+class App <<client>> {
+  + createApp()
+}
+
+class createSpecializedApp {
 }
 
 class ApiFactoryRegistry <<subsystem>> {
@@ -50,7 +54,7 @@ class traverseElementTree <<subsystem>> {
 }
 
 AppManager ...> BackstageApp : implements
-
+App--> createSpecializedApp : uses 
 createSpecializedApp --> AppManager : instantiates
 
 AppManager --> ApiFactoryRegistry : uses
