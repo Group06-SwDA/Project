@@ -72,6 +72,6 @@
 
 ### 2026-05-05
 
-- Analyzed code dependencies with madge
-- Produced some graphs about code dependencies
-- Reviewed knowledge dependencies
+- Analyzed code dependencies with madge with Giulia
+- Produced some graphs about code dependencies with Giulia
+- Reviewed knowledge dependencies with Giulia
