@@ -48,3 +48,8 @@
 
 ### 2026-05-01 - 2026-05-04
 - Analysed the results of other members of the team to start writing `Software_Design.md`. 
+
+### 2026-05-05
+
+- With Stefano: Reviewed code dependencies using `madge` to generate a graphs more easy to understand.
+- Started rewriting facade and strategy.
