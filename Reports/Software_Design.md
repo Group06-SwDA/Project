@@ -24,9 +24,9 @@ For instance the consumer calls `createRoot()` which among other things indirect
 
 ![](./Software_Deisgn_img/AppManager_facade.svg)
 There is not an efficient and clear alternative to this pattern. 
-It is possible to evaluate a Singleton to guarantee one single instance of the App and a builder to simplify its [`creation`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App.tsx#L132). Both alternatives address construction or instantiation concerns, but neither hides the internal complexity of the subsystem from the consumer, which is the core responsibility of the Facade.
+It is possible to evaluate a Singleton to guarantee one single instance of the App and a builder to simplify its [`creation`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/app/src/App. tsx#L132).An Abastract Factory can also be used but AppManager links together etherogeneous elements so it would not be the right choice. All alternatives address construction or instantiation concerns, but neither hides the internal complexity of the subsystem from the consumer, which is the core responsibility of the Facade.
 
-__
+
 ### Strategy
 
 [`AppThemeProvider`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L69) calls [`resolveTheme`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/app/AppThemeProvider.tsx#L23-L47) passing `themeId`, `shouldPreferDark`, and the installed `themes`. The strategy encapsulates a four-level fallback: match by explicit ID, prefer dark variant, fall back to light variant, fall back to the first available theme.
