@@ -1,0 +1,62 @@
+[
+  {
+    "file": "packages/create-app/src/lib/versions.ts",
+    "deps": 69
+  },
+  {
+    "file": "packages/ui/src/index.ts",
+    "deps": 46
+  },
+  {
+    "file": "plugins/scaffolder-backend/src/schema/openapi/generated/models/index.ts",
+    "deps": 46
+  },
+  {
+    "file": "plugins/scaffolder-common/src/schema/openapi/generated/models/index.ts",
+    "deps": 46
+  },
+  {
+    "file": "packages/catalog-client/src/schema/openapi/generated/models/index.ts",
+    "deps": 42
+  },
+  {
+    "file": "plugins/catalog-backend/src/schema/openapi/generated/models/index.ts",
+    "deps": 42
+  },
+  {
+    "file": "packages/ui/src/definitions.ts",
+    "deps": 41
+  },
+  {
+    "file": "packages/core-components/src/components/index.ts",
+    "deps": 33
+  },
+  {
+    "file": "plugins/catalog-backend/src/service/CatalogBuilder.ts",
+    "deps": 31
+  },
+  {
+    "file": "plugins/catalog/src/index.ts",
+    "deps": 28
+  },
+  {
+    "file": "packages/ui/src/css/styles.css",
+    "deps": 24
+  },
+  {
+    "file": "packages/cli-module-new/src/lib/version.ts",
+    "deps": 23
+  },
+  {
+    "file": "packages/backend-plugin-api/src/services/definitions/coreServices.ts",
+    "deps": 22
+  },
+  {
+    "file": "packages/backend-plugin-api/src/services/definitions/index.ts",
+    "deps": 22
+  },
+  {
+    "file": "packages/frontend-plugin-api/src/apis/definitions/index.ts",
+    "deps": 22
+  }
+]

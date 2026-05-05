@@ -1,0 +1,62 @@
+[
+  {
+    "file": "package.json",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/package.json",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/src/defaults/apis.ts",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/src/defaults/components.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/src/defaults/icons.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/src/defaults/themes.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-defaults/src/setupTests.ts",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-example-plugin/src/Component.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-example-plugin/src/ExampleSidebarItem.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/AuthProxyDiscoveryApi.ts",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/components/Root/LogoFull.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/components/Root/LogoIcon.jsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/components/advancedSettings/AdvancedSettings.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/components/catalog/EntityPage.tsx",
+    "deps": 0
+  },
+  {
+    "file": "packages/app-legacy/src/components/devtools/CustomDevToolsPage.tsx",
+    "deps": 0
+  }
+]
