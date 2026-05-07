@@ -52,3 +52,12 @@
 - Applied Louvain clustering (chosen for scalability and ability to detect communities in large graphs)
 - Generated the final diagram
 - Started validating the correctness of the extracted data (ongoing)
+
+### 2026-04-27
+- Finished data validation
+
+### 2026-04-28
+- Started researching design patterns
+
+### 2026-04-29
+- Continuing design patterns research
