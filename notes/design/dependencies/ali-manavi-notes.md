@@ -1,30 +1,30 @@
 # Runtime Dependencies Analysis Notes
 
 ## 📦 Runtime Dependency Analysis Overview
-The runtime dependency analysis was performed to understand which external packages 
-are required for Backstage to run in production, identify the core libraries each 
-package relies on, and provide a clear picture of the system's production dependencies.
+The runtime dependency analysis aimed to understand which external packages are 
+necessary for Backstage to run in production, to identify the key libraries each 
+package depends on, and to outline the system's production needs clearly.
 
 ## 🔍 What Are Runtime Dependencies?
 Runtime dependencies are packages listed under `"dependencies"` in each `package.json` 
-file. Unlike `"devDependencies"`, these are required for the application to function 
-in production, not just during development or testing.
+file. Unlike `"devDependencies"`, these packages are needed for the application to 
+work in production, not just during development or testing.
 
 ## 🛠️ Methodology
 
 ### Extraction Script
-I developed a custom script `extract-runtime.js` to automatically collect runtime 
+I created a custom script `extract-runtime.js` to automatically gather runtime 
 dependencies from all packages in the Backstage monorepo.
 
-The script works by:
+The script functions by:
 - Cloning the official Backstage repository from GitHub
-- Recursively scanning all folders in the monorepo for `package.json` files
+- Scanning all folders in the monorepo for `package.json` files
 - For each `package.json` found, extracting only the `"dependencies"` section
-- Skipping `node_modules` directories to avoid false results
-- Aggregating the results into a structured format (`package name → runtime dependencies`)
+- Avoiding `node_modules` directories to prevent false results
+- Compiling the results into a structured format (`package name → runtime dependencies`)
 
-The result of this process is a file: `runtime-deps.json`
-which contains the runtime dependencies of all 228 packages found in the monorepo.
+The result of this process is a file named `runtime-deps.json`, which contains 
+the runtime dependencies for all 228 packages identified in the monorepo.
 
 ### Running the Script
 ```bash
@@ -38,27 +38,27 @@ node extract-runtime.js
 ## 🧠 Key Observations
 
 ### Frontend Dependencies
-Backstage frontend packages rely heavily on:
+Backstage frontend packages depend significantly on:
 - **React ecosystem** (`react`, `react-dom`, `react-router-dom`)
 - **Material UI** (`@material-ui/core`, `@material-ui/icons`)
 - **Backstage core** (`@backstage/core-plugin-api`, `@backstage/core-components`)
 
 ### Backend Dependencies
 Backstage backend packages rely on:
-- **Express** for HTTP server
+- **Express** for the HTTP server
 - **Knex** for database queries
 - **Winston** for logging
 - **Zod** for validation
 
 ### Shared Dependencies
-Many packages share common utilities:
-- `lodash` - utility functions
-- `luxon` - date/time handling
-- `zod` - schema validation
+Several packages share common utilities:
+- `lodash` — utility functions
+- `luxon` — date/time handling
+- `zod` — schema validation
 
 ## ✅ Conclusions
-Backstage is a highly modular system with 228 packages each managing their own 
-runtime dependencies. The frontend relies heavily on React and Material UI, while 
-the backend is built around Express and Knex. Common utilities like Zod and Lodash 
-appear across many packages, reflecting their role as foundational libraries in 
-the Backstage ecosystem.
+Backstage is a modular system with 228 packages, each managing its own runtime 
+dependencies. The frontend depends heavily on React and Material UI, while the 
+backend is built around Express and Knex. Common utilities like Zod and Lodash 
+are used across many packages, highlighting their importance as foundational 
+libraries in the Backstage ecosystem.
