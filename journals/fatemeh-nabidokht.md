@@ -40,3 +40,7 @@
 
 - Began checking how Backstage can be compared with Clean Architecture concepts.
 - Started identifying possible mappings between Clean Architecture layers and Backstage elements, such as catalog models, backend plugin logic, adapters, and infrastructure-related components.
+
+### 2026-05-07
+
+- Completed the Clean Architecture section of the report.
