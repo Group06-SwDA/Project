@@ -1,0 +1,51 @@
+@startuml TemplateAction_Strategy
+
+interface TemplateAction <<strategy>> {
+  +id: string
+  +handler(ctx: ActionContext): Promise<void>
+}
+
+class createFetchTemplateAction <<concrete strategy>> {
+  +id: string = 'fetch:template'
+  +handler(ctx)
+}
+
+class createCatalogRegisterAction <<concrete strategy>> {
+  +id: string = 'catalog:register'
+  +handler(ctx)
+}
+
+class createPublishGithubAction <<concrete strategy>> {
+  +id: string = 'publish:github'
+  +handler(ctx)
+}
+
+interface TemplateActionRegistry <<context>> {
+  +register(action)
+  +get(actionId): TemplateAction
+  +list(): Map<string, TemplateAction>
+}
+
+class DefaultTemplateActionRegistry <<context>> {
+  -actions: Map<string, TemplateAction>
+  +register(action)
+  +get(actionId): TemplateAction
+  +list(): Map<string, TemplateAction>
+}
+
+class NunjucksWorkflowRunner <<client>> {
+  -actionRegistry: TemplateActionRegistry
+  +execute(spec: TaskSpec)
+}
+
+TemplateAction <|.. createFetchTemplateAction
+TemplateAction <|.. createCatalogRegisterAction
+TemplateAction <|.. createPublishGithubAction
+
+DefaultTemplateActionRegistry "1" --> "*" TemplateAction : contains
+TemplateActionRegistry --> TemplateAction : gets
+NunjucksWorkflowRunner --> TemplateActionRegistry : uses
+DefaultTemplateActionRegistry ..|> TemplateActionRegistry : implements
+
+
+@enduml
