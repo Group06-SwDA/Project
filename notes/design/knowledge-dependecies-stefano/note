@@ -1,0 +1,7 @@
+==> Extracting git log from ./Backstage_snapshot ...
+    51741 commits extracted -> ./git_log.log
+==> Applying filters ...
+    23630 commits after filtering -> ./git_log_filtered.log
+
+
+docker run -v /home/stealve/code_maat:/data code-maat -l /data/git_log_filtered.log -c git2 -a coupling --min-revisions 5 --min-coupling 30 > ../coupling.csv
