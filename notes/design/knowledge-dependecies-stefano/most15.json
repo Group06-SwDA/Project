@@ -1,0 +1,77 @@
+[
+  {
+    "file": "plugins/catalog/src/components/HasSubcomponentsCard/HasSubcomponentsCard.tsx",
+    "couplings": 14,
+    "avg_degree": 47.4
+  },
+  {
+    "file": "plugins/catalog/src/components/HasSystemsCard/HasSystemsCard.tsx",
+    "couplings": 13,
+    "avg_degree": 44.8
+  },
+  {
+    "file": "packages/cli/src/modules/info/index.ts",
+    "couplings": 12,
+    "avg_degree": 52.2
+  },
+  {
+    "file": "packages/cli/src/modules/translations/index.ts",
+    "couplings": 12,
+    "avg_degree": 50.0
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/github.ts",
+    "couplings": 12,
+    "avg_degree": 41.9
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubRepoCreate.ts",
+    "couplings": 12,
+    "avg_degree": 47.8
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubAutolinks.ts",
+    "couplings": 11,
+    "avg_degree": 56.5
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubIssuesLabel.ts",
+    "couplings": 11,
+    "avg_degree": 58.8
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubDeployKey.ts",
+    "couplings": 11,
+    "avg_degree": 60.0
+  },
+  {
+    "file": "packages/cli/src/modules/migrate/index.ts",
+    "couplings": 11,
+    "avg_degree": 65.4
+  },
+  {
+    "file": "packages/cli/src/wiring/CliInitializer.ts",
+    "couplings": 11,
+    "avg_degree": 36.7
+  },
+  {
+    "file": "packages/cli/src/modules/config/index.ts",
+    "couplings": 11,
+    "avg_degree": 55.5
+  },
+  {
+    "file": "plugins/github-release-manager/src/api/PluginApiClient.ts",
+    "couplings": 11,
+    "avg_degree": 46.5
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubBranchProtection.ts",
+    "couplings": 11,
+    "avg_degree": 51.3
+  },
+  {
+    "file": "plugins/scaffolder-backend-module-github/src/actions/githubWebhook.ts",
+    "couplings": 11,
+    "avg_degree": 45.6
+  }
+]
