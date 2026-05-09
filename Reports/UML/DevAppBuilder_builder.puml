@@ -1,11 +1,15 @@
 @startuml
 
+allowmixing
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 
-class createDevApp <<director>> {
+class createDevApp <<function>>{
   + createDevApp(): DevAppBuilder
 }
+
+component catalog_graph_plugin <<client/director>>
+
 
 class DevAppBuilder <<builder>> {
   - plugins: BackstagePlugin[]
@@ -37,6 +41,7 @@ class DevApp <<product>> {
 }
 
 createDevApp --> DevAppBuilder : instantiates
+createDevApp <-- catalog_graph_plugin : uses
 DevAppBuilder --> DevApp : assembles via build()
 
 @enduml

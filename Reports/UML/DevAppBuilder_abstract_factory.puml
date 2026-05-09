@@ -1,0 +1,59 @@
+@startuml
+
+allowmixing
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+component client
+
+interface DevApp  <<AbstractProduct>>{
+  + render(): void
+}
+
+class CatalogDevApp <<ConcreteProduct>> {
+  + render(): void
+}
+
+class ScaffolderDevApp <<ConcreteProduct>> {
+  + render(): void
+}
+
+class OrgDevApp <<ConcreteProduct>>{
+  + render(): void
+}
+
+interface DevAppFactory <<AbstractFactory>> {
+  + createDevApp(): DevApp
+}
+
+class CatalogDevAppFactory <<ConcreteFactory>> {
+  + createDevApp(): CatalogDevApp
+}
+
+class ScaffolderDevAppFactory  <<ConcreteFactory>>{
+  + createDevApp(): ScaffolderDevApp
+}
+
+class OrgDevAppFactory  <<ConcreteFactory>>{
+  + createDevApp(): OrgDevApp
+}
+
+CatalogDevAppFactory ..> CatalogDevApp : creates
+ScaffolderDevAppFactory ..> ScaffolderDevApp : creates
+OrgDevAppFactory ..> OrgDevApp : creates
+
+CatalogDevApp ..|> DevApp
+ScaffolderDevApp ..|> DevApp
+OrgDevApp ..|> DevApp
+
+CatalogDevAppFactory ..|> DevAppFactory
+OrgDevAppFactory ..|> DevAppFactory
+ScaffolderDevAppFactory ..|> DevAppFactory
+
+client ---> DevApp : Uses 
+client ---> DevAppFactory : Uses
+
+DevAppFactory -[hidden]-> OrgDevAppFactory
+DevAppFactory -[hidden]-> ScaffolderDevAppFactory
+DevAppFactory -[hidden]-> CatalogDevAppFactory
+@enduml
