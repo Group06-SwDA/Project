@@ -75,7 +75,3 @@ Backstage also aligns with the Ports and Adapters pattern through its swappable 
 ### Testability
 
 Plugin isolation supports testability: core logic can be exercised using mock implementations of the logger, database, and cache provided by Backstage's testing utilities. However, some route handlers mix HTTP plumbing with business logic rather than delegating to a thin, independently testable layer — the Humble Object pattern Clean Architecture recommends. Boundary discipline here is inconsistent across the codebase.
-
-### Overall Assessment
-
-Backstage's strongest Clean Architecture alignments are its inward dependency direction, interface-based cross-plugin communication, and swappable infrastructure adapters. Its weakest areas are inconsistent boundary crossing discipline in older plugins and the absence of a uniform Humble Object separation in route handlers. Overall, it is best described as a system that produces the practical benefits Clean Architecture aims for — modular, independently extendable plugins — through its own conventions rather than through strict textbook adherence.
