@@ -79,3 +79,7 @@
 ### 2026-05-09
 
 - Produced knowledge dependecies graphs
+
+### 2026-05-10
+
+- Produced knowledge-code dependencies comparisions
