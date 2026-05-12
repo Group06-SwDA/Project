@@ -75,3 +75,45 @@ Backstage also aligns with the Ports and Adapters pattern through its swappable 
 ### Testability
 
 Plugin isolation supports testability: core logic can be exercised using mock implementations of the logger, database, and cache provided by Backstage's testing utilities. However, some route handlers mix HTTP plumbing with business logic rather than delegating to a thin, independently testable layer — the Humble Object pattern Clean Architecture recommends. Boundary discipline here is inconsistent across the codebase.
+
+# Component Level
+
+## 3.1 Container Selection and Scope
+
+At Level 3, the goal is to zoom inside a single container and show what is actually running inside it. Out of the five containers identified at Level 2 — the Frontend SPA, the App Backend, PostgreSQL, the Redis Cache Store, and Object Storage — three are worth zooming into for this analysis.
+
+The **App Backend** is the obvious first choice. This is where all the real behaviour lives: ingestion, scaffolding, authentication, search, access control. Skipping it would leave the most interesting part of the architecture unexplained.
+
+The **Catalog Plugin** gets its own deep-dive because it sits at the centre of everything else. Every other plugin depends on it in some way, and its internal design — the provider/processor pipeline, the stitching step, the `CatalogApi` interface boundary — illustrates the core patterns used across the whole backend better than any other single plugin.
+
+The **Frontend SPA** is included because Backstage is not a typical frontend-backend split. The frontend has its own plugin system, its own dependency injection mechanism, and its own isolation rules that mirror what the backend does. Leaving it out would give a misleading picture of the architecture.
+
+**PostgreSQL and Redis are intentionally left out.** They are infrastructure — managed services with no application logic inside them. What belongs to them at Level 3 is already captured in the Container diagram: schemas owned by plugins, namespaced cache partitions. Drawing component diagrams for a database would be modelling data, not architecture.
+
+---
+
+## 3.2 Diagram 1 — App Backend Components
+
+### Diagram
+
+![App Backend Component Diagram](../../out/notes/architecture/diagrams/component-diagram-backend/component-diagram-backend.svg)
+
+### Explanation
+
+The App Backend runs seven components inside a single Node.js process: a **Backend System / DI Container** that wires everything together, and six backend plugins — **Catalog**, **Scaffolder**, **Auth**, **TechDocs**, **Search**, and **Permission** — each responsible for one distinct capability.
+
+**Backend System / DI Container.** Think of this as the backend's startup script, but with a strict contract. It is implemented in `@backstage/backend-app-api` and its job is to take every registered plugin and hand it exactly the services it declared it needs — a database connection, a logger, a cache client, a config reader. No plugin goes out and constructs these itself. This keeps the concrete infrastructure — Knex for SQL, Pino for logging, Keyv for caching — confined to one place, and everything above it depends only on abstract service interfaces. In Clean Architecture terms, this is the outermost layer: the place where all the details are wired up so the inner layers never have to know about them.
+
+**Catalog Plugin.** This is the component everything else depends on, directly or indirectly. It pulls entity descriptor files from source control on a schedule, runs them through a processing pipeline, resolves relationships between entities, and stores the final results in PostgreSQL. Other plugins that need catalog data — Search, Scaffolder, Permission — do not call into the catalog's code directly. They go through the `CatalogApi` interface, which is implemented by an HTTP client in the `catalog-client` package. This boundary is deliberate: no plugin should know how the catalog works internally, only what it exposes.
+
+**Scaffolder Plugin.** The scaffolder is what runs when a developer picks a template and fills in a form. Under the hood it is an async task engine: each scaffolding request becomes a task, a worker picks it up, and it executes a chain of actions — fetching template files, transforming them, creating a repository in source control, pushing the result. Task state and step-by-step logs are kept in PostgreSQL so the frontend can stream progress back to the user in real time.
+
+**Auth Plugin.** The Auth plugin handles the sign-in flow for every configured identity provider. Its key design decision is the `SignInResolver` — a swappable piece of logic that takes an external identity (say, a GitHub user) and maps it to a User entity in the catalog. Swap the resolver, and you change how identities are matched without touching anything else. The providers themselves — Okta, GitHub OAuth, Google — are all adapter implementations of the same interface. Different providers, identical contract.
+
+**TechDocs Plugin.** TechDocs turns Markdown files committed alongside source code into rendered documentation. The plugin's job is coordination: it triggers a MkDocs build, takes the generated HTML, and publishes it to whichever object storage bucket is configured. From an architectural standpoint it is an adapter — it sits between Backstage's API layer and two external systems (the source repository and the storage bucket) and translates between them.
+
+**Search Plugin.** Search has two separate jobs running at different times. In the background, scheduled collator jobs reach out to the Catalog and TechDocs APIs, pull down content, and build a search index. At request time, a thin REST endpoint queries that index and returns results. The search engine itself — Lunr by default, Elasticsearch as an alternative — sits behind a `SearchEngine` interface. Swapping engines is a configuration and adapter change, not a logic change.
+
+**Permission Plugin.** The Permission plugin is a cross-cutting authority. When any other plugin needs to decide whether a user is allowed to perform an action — read an entity, run a template, delete a resource — it sends a permission request here and gets back an allow or deny decision. The plugin itself holds no domain logic. It evaluates whatever policies the platform engineer has registered. Its value is that it decouples access control from every domain plugin: none of them need to know the policy rules, only whether a given action is permitted.
+
+**Cross-plugin communication.** One rule holds across the entire backend: plugins do not import each other's code. When Search needs entities from Catalog, it calls `CatalogClient` — an HTTP client — as if Catalog were a remote service, even though both plugins are running in the same process. This is not just a style choice. It means any plugin can be moved into its own separate deployment without touching a single line of plugin code, because the communication boundary already exists.
