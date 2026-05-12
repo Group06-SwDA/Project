@@ -69,3 +69,10 @@
 
 - Written builder and refined the UML.
 
+### 2026-05-11
+
+- Anlysed more deeply and produced UML for Observer Design Pattern.
+
+### 2026-05-12
+
+- Written Observer Design Pattern.
