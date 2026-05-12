@@ -92,7 +92,7 @@ The **Frontend SPA** is included because Backstage is not a typical frontend-bac
 
 ---
 
-## 3.2 Diagram 1 — App Backend Components
+## 3.2 Diagram — App Backend Components
 
 ### Diagram
 
