@@ -1,0 +1,77 @@
+[
+  {
+    "file": "packages/cli-node/src/pacman/PackageManager.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "packages/cli-node/src/pacman/yarn/Yarn.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/scaffolder/src/filter/EntityFilterGroupsProvider.tsx",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/scaffolder/src/filter/context.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/catalog-backend-module-azure/src/providers/config.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/catalog-backend-module-azure/src/providers/types.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "docs-ui/src/app/components/toast/components.tsx",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "docs-ui/src/app/components/toast/snippets.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "packages/cli/src/modules/start/alpha.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "packages/cli/src/modules/start/index.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/graphql/src/index.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/graphql/src/setupTests.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/register-component/src/index.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "plugins/register-component/src/plugin.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  },
+  {
+    "file": "packages/cli/src/modules/build/lib/optionsParser.ts",
+    "couplings": 1,
+    "avg_degree": 100.0
+  }
+]
