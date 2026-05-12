@@ -39,30 +39,22 @@ In `Backstage` [`DevAppBuilder`](https://github.com/Group06-SwDA/Backstage_snaps
 ![](./Software_Deisgn_img/DevAppBuilder_builder.svg)
 
 **Alternative: Abstract Factory**
-A possible alternative is the following Abstract Factory. The concrete products rapresent the actual specific DOM components create by the builders. 
-![](./Software_Deisgn_img/DevAppBuilder_abstract_factory.svg).
+
+A possible alternative is the following Abstract Factory. The concrete products rapresent the actual specific DOM components created by the builders. 
+![](./Software_Deisgn_img/DevAppBuilder_abstract_factory.svg)
 The pro is that it is not necessary to build the pipeline every time a DevApp is needed. The drawback is that is not incremental and not flexible. Each DevApp requires its own factory.
  
-### Observer
+### Observer 
 
-[`subjects.ts`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts) defines [`BehaviorSubject<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L123), which holds a `Set` of active subscribers and fans out each `next(value)` to all of them, replaying the current value to any new subscriber (unlike [`PublishSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/lib/subjects.ts#L31)). [`AppThemeSelector`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts) wraps a private `BehaviorSubject` exposed read-only via [`activeThemeId$()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L78): calling [`setActiveThemeId()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L85) notifies all observers: `useObservable` re-renders the UI and the observer in [`createWithStorage()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L30) persists the choice to `localStorage`.
+The Observer pattern, a behavioral pattern, is used when some changes in an object, called subject, influence others called observers. The subject keeps a collection of observers and notifies them of its changes.
+In `Backstage` the concrete subject is represented by [`BehaviorSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L125) which implements the [`Observable<T> type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L63) and `ZenObservable.SubscriptionObserver<T>` which comes from the external library `zen-observable`. Both of them play the role of the GoF subject interface. In particular, the former exposes the `subscribe()` method and indirectly the `unsubscribe()` method through the [`Subscription type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L33) and the latter exposes the methods `next()`, `error()` and `complete()` which correspond to the `notify()` in GoF. Specifically in `Backstage` `ZenObservable.SubscriptionObserver<T>` also represents the observer interface, so from the observer side subscribers implement this methods to receive updates on the subject, and from the subject side they are implemented to notify a new theme value.`BehaviorSubject` keeps a set of [`ZenObservable.SubscriptionObserver<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L156-158) a collection of subscribers. One example of concrete observer is a lambda function defined in [`AppThemeSelector`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L42-48) which is passed to the overloaded `subscribe` method instead of the one accepting only an [`Observer type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L22). The `Observer type` is not actually used in this example but could be used by other observer implementation. To summarize the user changes a theme and the subject notifies all observers about this change and each one implements its own logic, for example the one analysed persists the themeId in the browser. 
 
 ![](./Software_Deisgn_img/AppThemeSelector_observer.svg)
 
-**Which classes play which role?**
-
-- **Subject**: `AppThemeSelector`, holds the state and exposes `activeThemeId$()` for subscription.
-- **Concrete observable**: `BehaviorSubject<T>` in `subjects.ts`, manages the subscriber set and fans out notifications; replays the current value to new subscribers.
-- **Observers**: `useObservable` in `AppThemeProvider` (re-renders the UI) and the storage callback in `createWithStorage()`
-
-**Why is the pattern used?**
-Two independent reactions (UI update and persistence) must happen whenever the active theme changes. The observer pattern lets both subscribe without `AppThemeSelector` knowing about either of them.
-
-**Which problem does it solve?**
-It decouples the source of a state change from everything that must react to it. Without the pattern, `setActiveThemeId()` would have to call the UI updater and the storage writer explicitly, creating direct dependencies on both.
-
 **Alternative: Command**
-Instead of observers subscribing dynamically, the subject could hold a list of Command objects that are explicitly invoked when the state changes, each encapsulating one reaction.
 
-- *Pro*: explicit and easy to trace; supports undo/redo and logging; no hidden notification chain.
-- *Con*: tight coupling between the subject and the specific commands it must invoke; no dynamic subscribe/unsubscribe; adding a new reaction requires modifying the subject's command list.
+A possible alternative is a command, implemented as follows.
+Here AppThemeSelector becomes an active component since it knows exactly which command to execute, while before it only sent notifications without knowing what concrete observers would have done.
+![](./Software_Deisgn_img/AppThemeSelector_Command.svg)
+
+The pro is that the relation between AppThemeSelector and the Receiver isexplicit and easy to trace in the client and it is not necessary to send notifications. The drawback is that there is no dynamic subscription of observers so the invoker has to hold a list of command objects that are explicitly invoked so adding a new reaction requires modifying the invoker's command list.

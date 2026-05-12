@@ -1,60 +1,72 @@
-@startuml
+@startuml AppThemeSelector_Observer
 
-skinparam classAttributeIconSize 0
 skinparam linetype ortho
+skinparam classAttributeIconSize 0
 
-interface Observable <<interface>> {
-  + subscribe()
+' =================== SUBJECT SIDE ===================
+
+interface "Observable<T>" as Observable <<Subject interface>> {
+  +subscribe(observer: Observer<T>): Subscription
+  +subscribe(onNext: (value: T) => void, onError?: (error: Error) => void, onComplete?: () => void): Subscription
 }
 
-class PublishSubject <<subject>> {
-  - subscribers: Set
-  - isClosed: boolean
-  --
-  + next(value: T)
-  + error(error: Error)
-  + complete()
-  + subscribe()
+interface "ZenObservable.SubscriptionObserver<T>" as ZenSubscriptionObserver <<Subject interface Observer interface>> {
+  +next(value: T): void
+  +error(error: Error): void
+  +complete(): void
+  +closed: boolean
 }
 
-class BehaviorSubject <<subject>> {
-  - currentValue: T
-  - subscribers: Set
-  - isClosed: boolean
-  --
-  + next(value: T)
-  + error(error: Error)
-  + complete()
-  + subscribe()
+class "BehaviorSubject<T>" as BehaviorSubject <<ConcreteSubject>> {
+  -currentValue: T
+  -isClosed: boolean
+  -subscribers: Set<ZenObservable.SubscriptionObserver<T>>
+  +next(value: T): void
+  +error(error: Error): void
+  +complete(): void
+  +subscribe(observer): Subscription
 }
 
-class AppThemeSelector <<concrete subject>> {
-  - subject: BehaviorSubject<string | undefined>
-  - activeThemeId: string | undefined
-  - themes: AppTheme[]
-  --
-  + activeThemeId$(): Observable
-  + setActiveThemeId(themeId?): void
-  + getActiveThemeId(): string | undefined
-  + getInstalledThemes(): AppTheme[]
-  + {static} createWithStorage(): AppThemeSelector
+class AppThemeSelector <<uses ConcreteSubject>> {
+  -subject: BehaviorSubject<string | undefined>
+  -activeThemeId: string | undefined
+  +setActiveThemeId(themeId?): void
+  +activeThemeId$(): Observable<string | undefined>
+  +getActiveThemeId(): string | undefined
 }
 
-class AppThemeProvider <<concrete observer>> {
-  --
-  + useObservable(activeThemeId$())
+' =================== OBSERVER SIDE ===================
+
+interface "Observer<T>" as ObserverInterface <<Observer interface>> {
+  +next?(value: T): void
+  +error?(error: Error): void
+  +complete?(): void
 }
 
-class localStorageSync <<concrete observer>> {
-  --
-  + subscribe callback
-  + storageListener
+
+interface "Subscription" as Subscription {
+  +unsubscribe(): void
+  +closed: boolean
 }
 
-PublishSubject ..|> Observable
-BehaviorSubject ..|> Observable
-AppThemeSelector --> BehaviorSubject : owns
-AppThemeProvider --> AppThemeSelector : observes via activeThemeId$()
-localStorageSync --> AppThemeSelector : observes via activeThemeId$()
+class "themeId => { localStorage... }" as LocalStorageCallback <<ConcreteObserver\nanonymous>> {
+}
+
+
+' =================== RELATIONS ===================
+
+BehaviorSubject ..|> Observable : implements
+BehaviorSubject ..|> ZenSubscriptionObserver : implements
+BehaviorSubject "1" o-- "*" ZenSubscriptionObserver : maintains subscribers
+
+Observable ..> Subscription : returns
+Observable ..> ObserverInterface : accepts
+
+AppThemeSelector "1" *-- "1" BehaviorSubject : composed of
+AppThemeSelector ..> Observable : exposes via\nactiveThemeId$()
+
+AppThemeSelector --> Observable : calls subscribe(onNext)
+AppThemeSelector --> LocalStorageCallback : instantiates\nand registers
+AppThemeSelector --> Subscription : calls unsubscribe()\nin dispose()
 
 @enduml

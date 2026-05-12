@@ -1,0 +1,39 @@
+@startuml AppThemeSelector_Command
+
+allowmixing
+
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface "ThemeCommand" as Command <<Command interface>> {
+  +execute(themeId: string | undefined): void
+}
+
+class "SetThemeCommand" as SetThemeCommand <<ConcreteCommand>> {
+  -localStorage: Storage
+  +constructor(localStorage: Storage)
+  +execute(themeId: string | undefined): void
+}
+
+class "localStorage" as LocalStorage <<Receiver>> {
+  +setItem(key: string, value: string): void
+  +removeItem(key: string): void
+}
+
+class "AppThemeSelector" as AppThemeSelector <<Invoker>> {
+  -command: ThemeCommand
+  -activeThemeId: string | undefined
+  +constructor(command: ThemeCommand)
+  +setActiveThemeId(themeId?: string): void
+}
+
+component Client
+
+Command <|.. SetThemeCommand : implements
+SetThemeCommand --> LocalStorage : delegates to
+AppThemeSelector --> Command : triggers execute()
+Client --> LocalStorage : creates
+Client --> SetThemeCommand : creates and configures
+Client --> AppThemeSelector : injects command into
+
+@enduml
