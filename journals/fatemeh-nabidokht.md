@@ -49,6 +49,16 @@
 
 ### 2026-05-09
 
-- Extracted the real internal components of the App Backend container for the C4 Level 3 diagram. 
+- Extracted the real internal components of the App Backend container for the C4 Level 3 diagram.
 
 - Started drawing the C4 Level 3 Component Diagram for the App Backend container.
+
+### 2026-05-10
+
+- Continued the development and refinement of the Level 3 Component diagrams.
+
+### 2026-05-12
+
+- Generated the first iteration of the Backend Component diagram.
+
+- Completed the supporting documentation for the component-level architecture.
