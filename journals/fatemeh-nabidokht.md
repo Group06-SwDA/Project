@@ -44,3 +44,11 @@
 ### 2026-05-07
 
 - Completed the Clean Architecture section of the report.
+
+- We had a meeting with the team to get updated on the work others had done, understand what we should do next, and share our knowledge with each other.
+
+### 2026-05-09
+
+- Extracted the real internal components of the App Backend container for the C4 Level 3 diagram. 
+
+- Started drawing the C4 Level 3 Component Diagram for the App Backend container.
