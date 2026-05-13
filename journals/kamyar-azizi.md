@@ -87,3 +87,11 @@ npx madge packages/app/src --json > module-dependencies.json
 
 - Finalized diagrams and supporting files for inclusion in project documentation.
 - Created a Design Notes document (`kamyar-azizi-note.md`) containing the work I have done on dependency analysis, including package, module, and structural dependencies, along with explanations for other team members.
+
+### 2026-05-07
+
+- Held a meeting with the team to review the progress made by others, discuss the next steps, and exchange knowledge across the team.
+
+### 2026-05-11
+
+- Started reviewing other team members’ work and became more involved in understanding the architecture side of the project.
