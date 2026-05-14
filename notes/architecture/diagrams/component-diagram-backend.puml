@@ -24,12 +24,11 @@ Container_Boundary(backend, "App Backend [Node.js, TypeScript]") {
 
 ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Durable data store.\nEach plugin owns its own\nschema with independent\nmigrations.")
 
-Container(redis, "Cache Store", "Redis / Keyv", "Optional distributed cache.\nEach plugin uses its own\nnamespaced partition.")
+Container(redis, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional distributed cache.\nEach plugin uses its own\nnamespaced partition.")
 
 Container(frontend, "Frontend SPA", "React, TypeScript", "Browser portal. Calls\nplugin REST APIs.")
 
 System_Ext(sourceControl, "Source Control", "GitHub / GitLab")
-System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions")
 System_Ext(objectStorage, "Object Storage", "AWS S3 / GCS / Azure Blob")
 System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth")
 
@@ -38,6 +37,7 @@ Rel(frontend, scaffolderPlugin, "POST /scaffolder/v2/tasks, etc.", "JSON/HTTPS")
 Rel(frontend, authPlugin, "GET /auth/<provider>/start, etc.", "OAuth2/HTTPS")
 Rel(frontend, techdocsPlugin, "GET /techdocs/static/...", "JSON/HTTPS")
 Rel(frontend, searchPlugin, "GET /search/query", "JSON/HTTPS")
+Rel(frontend, permissionPlugin, "POST /permission/batch", "JSON/HTTPS")
 
 Rel(catalogPlugin, backendSystem, "Resolves: DatabaseService,\nLoggerService, CacheService,\nConfigService", "In-process DI")
 Rel(scaffolderPlugin, backendSystem, "Resolves: DatabaseService,\nLoggerService, ConfigService", "In-process DI")
@@ -49,19 +49,18 @@ Rel(permissionPlugin, backendSystem, "Resolves: LoggerService,\nConfigService", 
 Rel(searchPlugin, catalogPlugin, "Fetches entity documents\nfor indexing via CatalogApi", "In-process HTTP / CatalogClient")
 Rel(scaffolderPlugin, catalogPlugin, "Reads Template entities\nvia CatalogApi", "In-process HTTP / CatalogClient")
 Rel(permissionPlugin, catalogPlugin, "Resolves entity ownership\nfor policy evaluation", "In-process HTTP / CatalogClient")
-Rel(permissionPlugin, scaffolderPlugin, "Evaluates scaffolder\ntask permissions", "In-process HTTP")
+Rel(scaffolderPlugin, permissionPlugin, "Checks if task execution\nis permitted", "In-process HTTP")
 
 Rel(catalogPlugin, postgres, "Reads/writes entity records,\nrelations, refresh state", "SQL/TCP via Knex")
 Rel(scaffolderPlugin, postgres, "Persists task state and logs", "SQL/TCP via Knex")
-Rel(authPlugin, postgres, "Persists session tokens", "SQL/TCP via Knex")
-Rel(searchPlugin, postgres, "Persists Lunr search index", "SQL/TCP via Knex")
+Rel(authPlugin, postgres, "May persist auth-related state\ndepending on configuration", "SQL/TCP via Knex")
+Rel(searchPlugin, postgres, "Persists search index only\nwhen using Postgres search engine", "SQL/TCP via Knex")
 
 Rel(catalogPlugin, redis, "Caches entity lookups\n(plugin-namespaced)", "Keyv/TCP")
 Rel(searchPlugin, redis, "Caches frequent queries\n(plugin-namespaced)", "Keyv/TCP")
 
 Rel(catalogPlugin, sourceControl, "Reads catalog-info.yaml files\n(Discovery Providers)", "REST API/HTTPS")
 Rel(scaffolderPlugin, sourceControl, "Creates, pushes repos\n(Scaffolder Actions)", "REST API/HTTPS")
-Rel(catalogPlugin, cicd, "Fetches build & pipeline\nstatus for entities", "REST API/HTTPS")
 Rel(techdocsPlugin, objectStorage, "Reads/writes generated\nHTML TechDocs assets", "REST API/HTTPS")
 Rel(authPlugin, idp, "Authenticates users,\nresolves group membership", "OAuth2/HTTPS")
 
