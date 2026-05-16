@@ -1,7 +1,62 @@
 # Software Design
 ## Dependencies
+
 ### Code Dependencies
+Code dependencies were extracted using the following `madge` command 
+
+```bash
+madge --json \
+  --extensions ts,tsx \
+  --ts-config /Backstage/Backstage_snapshot/tsconfig.json \
+  --exclude '\.test\.(ts|tsx)$|\.spec\.(ts|tsx)$|\.stories\.(ts|tsx)$|__mocks__|__fixtures__|__tests__|\.d\.ts$|^\.storybook/' \
+  /Backstage/Backstage_snapshot/packages/ \
+  /Backstage/Backstage_snapshot/plugins/ \
+  > deps.json
+``` 
+It builds a dependency graph from `import` statements in `.ts` and `.tsx` files. Test files, mocks, fixtures, stories, and type declarations were excluded to focus on production code only.
+
+The analysis covers two top-level directories of the Backstage monorepo: `packages/`, which contains core libraries and shared infrastructure and `plugins/`, which contains independently deployable feature modules.
+
+Using a python script it was possible to visualize dependency distribution
+
+![](./Software_Deisgn_img/distribution_donut.png)
+![](./Software_Deisgn_img/histogram.png)
+
+The large majority of files have zero or very few dependencies.
+
+The file which has the most dependencies is `packages/create-app/src/lib/versions.ts`, it references every package in the monorepo to keep version numbers aligned across releases. Its high count is structural.
+The `models/index.ts` files are generated automatically from OpenAPI schemas and re-export every model in one place. 
+Other notable entries include `packages/ui/src/index.ts` and `packages/core-components/src/components/index.ts`, both are public entry points for component libraries, designed to aggregate exports for consumers. `plugins/catalog-backend/src/service/CatalogBuilder.ts` is an exception: it is a manually written orchestrator that wires together many catalog services.
+
+![](./Software_Deisgn_img/most15.png)
+
+
+A large number of files have zero dependencies, such as components, icon definitions, theme tokens, and default configuration values. They are most common in `packages/app-defaults` and `packages/app-legacy` which are packages that provide stable defaults and are designed so that other files depend on them.
+
+![](./Software_Deisgn_img/least15.png)
+
 ### Knowledge Dependencies
+
+Knowledge dependencies measure how often two files are changed together in the same commit. Unlike code dependencies, they are derived from the history of the repository and reflect how the development team actually works in practice.
+
+The git log was extracted from the Backstage snapshot (2026-04-09), then filtered using a bash script to remove bot commits, merge commits, and unusually large changesets, leaving 23630 commits for the analysis.
+
+Coupling analysis was performed using `code-maat`
+
+```bash
+docker run -v /home/stealve/code_maat:/data code-maat \
+  -l /data/git_log_filtered.log \
+  -c git2 -a coupling \
+  --min-revisions 5 --min-coupling 30 \
+  > ../coupling.csv
+```
+In the obtained output the `degree` value (0–100%) represents the share of commits in which both files of a pair were modified together.
+The `--min-revisions 5` parameter excludes file pairs where at least one file has been modified fewer than 5 times in total.
+The `--min-coupling 30` parameter excludes pairs whose degree is below 30%.
+The following graphs show how many co-change partners each file has.
+ 
+![](./Software_Deisgn_img/knowledge_distribution_donut.png)
+![](./Software_Deisgn_img/knowledge_histogram.png)
 
 ## Design Patterns
 
@@ -57,4 +112,4 @@ A possible alternative is a command, implemented as follows.
 Here AppThemeSelector becomes an active component since it knows exactly which command to execute, while before it only sent notifications without knowing what concrete observers would have done.
 ![](./Software_Deisgn_img/AppThemeSelector_Command.svg)
 
-The pro is that the relation between AppThemeSelector and the Receiver isexplicit and easy to trace in the client and it is not necessary to send notifications. The drawback is that there is no dynamic subscription of observers so the invoker has to hold a list of command objects that are explicitly invoked so adding a new reaction requires modifying the invoker's command list.
+The pro is that the relation between AppThemeSelector and the Receiver is explicit and easy to trace in the client and it is not necessary to send notifications. The drawback is that there is no dynamic subscription of observers so the invoker has to hold a list of command objects that are explicitly invoked so adding a new reaction requires modifying the invoker's command list.
