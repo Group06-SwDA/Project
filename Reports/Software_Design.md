@@ -97,10 +97,12 @@ It is possible to represent the relationship between knowledge and code dependen
 ![](./Software_Deisgn_img/scatter_quadrants.png)
 
 The majority of pairs are in the Independent quadrant, the expected baseline for a large modular codebase. The Aligned quadrant confirms that many statically coupled files are also co-changed frequently. The two asymmetric quadrants are the most analytically interesting.
+
 The pairs in the hidden dependencies quadrant are frequently committed together but do not have static imports. It reveals an implicit and logical coupling not explicitly formalized.
+![](./Software_Deisgn_img/focused_hidden_dep.png)
 
 The pairs in the stale import quadrant have a static import relationship but rarely appear in the same commit. Two interpretations are possible. The first is positive: the imported module is a stable abstraction that encapsulates change well, so the importing file almost never needs updating when the dependency changes. The second may be unsafe: the import may be vestigial so it was declared in the past but it is no longer actively used.
-
+![](./Software_Deisgn_img/focused_stale_import.png)
 ## Design Patterns
 
 ### Facade
@@ -127,7 +129,10 @@ It is important to note that TemplateAction is a typescript Type and not an inte
 ![](./Software_Deisgn_img/TemplateAction_Strategy.svg)
 
 **Alternative: Template Method**
- An alternative to the Strategy could be the Template method, where a base abstract class would define a fixed execution structure leaving subclasses to implement only the specific behaviour but this would be less appropriate in this context since the concrete actions are too different from each other, having nothing in common except receiving an ActionContext.
+An alternative to the Strategy could be the Template method, where a base abstract class would define a fixed execution structure leaving subclasses to implement only the specific behaviour but this would be less appropriate in this context since the concrete actions are too different and unreleated to each other, having nothing in common except receiving an ActionContext. Moreover using template method if a new plugin needs to be added the code should be recompiled and redistributed.
+In template method, TemplateAction becomes an abstract class defining handler() as the abstract step. Concrete actions are subclasses that override handler() through inheritance. The structure is fixed at compile time but makes the algorithm structure explicit. Despite having many drawbacks for `Backstage` system the template method could be implemented as follows.
+![](./Software_Deisgn_img/TemplateAction_Template.png)
+
 
 ### Builder
 The third analysed pattern is a fluent-builder, a creational pattern, used to build a complex object piece by piece using several methods including the last one to finalize its creation. Forcing all DevApp configuration into a single constructor call would be unreadable and hard to extend.

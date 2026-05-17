@@ -1,0 +1,61 @@
+@startuml TemplateAction_Template
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+allowmixing
+
+abstract class TemplateAction {
+  +id: string
+  +handler(ctx: ActionContext): Promise<void>
+}
+
+class createFetchTemplateAction <<concrete strategy>> {
+  +id: string = 'fetch:template'
+  +handler(ctx)
+}
+
+class createCatalogRegisterAction <<concrete strategy>> {
+  +id: string = 'catalog:register'
+  +handler(ctx)
+}
+
+class createPublishGithubAction <<concrete strategy>> {
+  +id: string = 'publish:github'
+  +handler(ctx)
+}
+
+interface TemplateActionRegistry <<Registry>> {
+  +register(action)
+  +get(actionId): TemplateAction
+  +list(): Map<string, TemplateAction>
+}
+
+class DefaultTemplateActionRegistry <<Registry>> {
+  -actions: Map<string, TemplateAction>
+  +register(action)
+  +get(actionId): TemplateAction
+  +list(): Map<string, TemplateAction>
+}
+
+class NunjucksWorkflowRunner <<context>> {
+  -actionRegistry: TemplateActionRegistry
+  +execute(spec: TaskSpec)
+  -executeStep(step: TaskStep)
+}
+
+component "Scaffolder bootstrap\n(createPlugin / wiring)" as Client <<client>>
+
+TemplateAction <--- createFetchTemplateAction : extends
+TemplateAction <--- createCatalogRegisterAction : extends
+TemplateAction <--- createPublishGithubAction : extends
+
+Client --> DefaultTemplateActionRegistry : registers actions into
+Client --> NunjucksWorkflowRunner : injects registry into
+
+DefaultTemplateActionRegistry "1" o-- "*" TemplateAction : contains
+TemplateActionRegistry --> TemplateAction : returns
+NunjucksWorkflowRunner --> TemplateActionRegistry : uses
+DefaultTemplateActionRegistry ..|> TemplateActionRegistry : implements
+
+
+@enduml
