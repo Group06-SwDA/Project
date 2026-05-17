@@ -53,7 +53,8 @@
 
 ### 2026-05-05
 
-- With Stefano: Reviewed code dependencies using `madge` to generate a graphs more easy to understand.
+- With Stefano: Reviewed code dependencies and knowledge dependencies using `madge` and `code-maat` to generate graphs more easy to understand.
+Evaluated the method to compare both types of dependencies.
 - Started rewriting facade and strategy.
 
 ### 2026-05-06
@@ -76,3 +77,12 @@
 ### 2026-05-12
 
 - Written Observer Design Pattern.
+
+### 2026-05-16
+
+- Started writing code and knowledge dependencies.
+
+### 2026-05-17
+
+- Produced PUML for alternative template pattern and updated the paragraph.
+- Finished Software_Design.md
