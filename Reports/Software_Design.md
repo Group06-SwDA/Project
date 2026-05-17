@@ -58,6 +58,49 @@ The following graphs show how many co-change partners each file has.
 ![](./Software_Deisgn_img/knowledge_distribution_donut.png)
 ![](./Software_Deisgn_img/knowledge_histogram.png)
 
+Using `analyze_coupling.py` the obtained output is a JSON file where for each file is shown its amount of coupled files and the average degree.
+The following chart represents a ranking of the top 15 files in terms of coupling.
+
+![](./Software_Deisgn_img/top15_knowledge.png)
+
+The first file is `HasSubcomponentsCard/HasSubcomponentsCard.tsx` with 14 coupled partners and an average degree of 47.4% the highest coupling count in the list. This catalog UI component evolves together with several other relationship cards (`HasSystemsCard`, `HasResourcesCard`, etc.).
+
+The second group of files is the `plugins/scaffolder-backend-module-github/src/actions/` group: `github.ts`, `githubRepoCreate.ts`, `githubAutolinks.ts`, `githubIssuesLabel.ts`, `githubDeployKey.ts`, `githubBranchProtection.ts`, and `githubWebhook.ts` all appear in the top 15, with 11–12 coupled partners each and average degrees between 42% and 60%. These files implement individual GitHub actions for the Backstage scaffolder and follow a shared interface. When one action is added or modified, the others are typically updated at the same time to maintain consistency.
+
+The last group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
+
+The following bar chart shows how many files having only one partner there are in each package. 
+![](./Software_Deisgn_img/least15_knowledge.png)
+
+Several files have only one coupled partner but a degree of 100% so every commit that touched one also touched the other. Examples include `packages/cli-node/src/pacman/PackageManager.ts` with `Yarn.ts` and `plugins/catalog-backend-module-azure/src/providers/config.ts` with`types.ts`. Their 100% degree reflects a strict co-evolution rule.
+
+### Comparison 
+Each file pair was assigned a code score based on the direction of static imports:
+
+| Import relationship | Code score |
+|---------------------|------------|
+| No import           | 0          |
+| One-way (A → B)     | 50         |
+| Bidirectional       | 100        |
+
+Bidirectional contains both direct and indirect dependencies. The first ones are certainly the circular dependencies, but it is not possible to know for sure the nature of the last ones. 
+The knowledge score is the `degree` from `coupling.csv` (0–100%). Combining the two scores places each pair in one of four quadrants:
+
+| Quadrant | Code | Knowledge | Interpretation |
+|----------|------|-----------|----------------|
+| **Aligned** | high | high | Coupling is consistent |
+| **Hidden dependency** | low | high | Always co-changed, no import — architectural smell |
+| **Stale import** | high | low | Import declared but rarely co-changed — stable or vestigial |
+| **Independent** | low | low | No coupling of either kind  |
+
+It is possible to represent the relationship between knowledge and code dependencies using the following scatter matrix. Each point in this plot is a pair of files.
+![](./Software_Deisgn_img/scatter_quadrants.png)
+
+The majority of pairs are in the Independent quadrant, the expected baseline for a large modular codebase. The Aligned quadrant confirms that many statically coupled files are also co-changed frequently. The two asymmetric quadrants are the most analytically interesting.
+The pairs in the hidden dependencies quadrant are frequently committed together but do not have static imports. It reveals an implicit and logical coupling not explicitly formalized.
+
+The pairs in the stale import quadrant have a static import relationship but rarely appear in the same commit. Two interpretations are possible. The first is positive: the imported module is a stable abstraction that encapsulates change well, so the importing file almost never needs updating when the dependency changes. The second may be unsafe: the import may be vestigial so it was declared in the past but it is no longer actively used.
+
 ## Design Patterns
 
 ### Facade
