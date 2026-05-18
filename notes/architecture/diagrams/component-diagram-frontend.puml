@@ -1,15 +1,15 @@
 @startuml component-diagram-frontend
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!include <c4/C4_Component.puml>
 
 LAYOUT_WITH_LEGEND()
 
-title Component Diagram for Backstage — Frontend SPA
+title Component Diagram for Backstage - Frontend SPA
 
 Container_Boundary(frontend, "Frontend SPA [React, TypeScript]") {
 
     Component(appShell, "App Shell", "React / @backstage/app-defaults\n@backstage/core-app-api", "Top-level composition root of\nthe frontend. Declares all\ninstalled plugins, registers\nroutes, mounts the sidebar,\nprovides the theme, and\ncreates the ApiRegistry.")
 
-    Component(apiRegistry, "ApiRegistry\n/ Utility APIs", "TypeScript\n@backstage/core-plugin-api\nApiProvider", "Frontend DI container.\nHolds singleton API instances\n(CatalogApi, ScaffolderApi,\nIdentityApi, SearchApi, etc.).\nPlugins consume APIs through\nthe useApi(ref) hook, never\nimporting implementations\ndirectly — Dependency\nInversion on the frontend.")
+    Component(apiRegistry, "ApiRegistry\n/ Utility APIs", "TypeScript\n@backstage/core-plugin-api\nApiProvider", "Frontend DI container.\nHolds singleton API instances\n(CatalogApi, ScaffolderApi,\nIdentityApi, SearchApi, etc.).\nPlugins consume APIs through\nthe useApi(ref) hook, never\nimporting implementations\ndirectly - Dependency\nInversion on the frontend.")
 
     Component(identityAuth, "Auth / Identity UI", "React\n@backstage/plugin-auth-react\n@backstage/core-app-api", "Renders the sign-in page,\nmanages the OAuth redirect\nflow, stores the Backstage\ntoken in memory, and exposes\nIdentityApi to all consumers.\nEach OAuth provider has\na swappable SignInPage.")
 
@@ -21,9 +21,9 @@ Container_Boundary(frontend, "Frontend SPA [React, TypeScript]") {
 
     Component(searchUI, "Search UI Plugin", "React\n@backstage/plugin-search-react\n@backstage/plugin-search", "GlobalSearchModal: keyboard-\nshortcut-activated overlay.\nSearchBar: debounced input.\nSearchResultList: renders\nresult cards by type.\nCalls SearchApi. Result\ncards are registered by\nother plugins (Catalog, TechDocs).")
 
-    Component(permissionUI, "Permission Framework\n(frontend)", "TypeScript\n@backstage/plugin-permission-react", "RequirePermission HOC and\nusePermission hook. Gates\nUI element rendering based\non permission decisions.\nNot a security boundary —\nbackend plugins must enforce\npermissions independently.\nConsumed by Catalog UI and\nScaffolder UI.")
+    Component(permissionUI, "Permission Framework\n(frontend)", "TypeScript\n@backstage/plugin-permission-react", "RequirePermission HOC and\nusePermission hook. Gates\nUI element rendering based\non permission decisions.\nNot a security boundary -\nbackend plugins must enforce\npermissions independently.\nConsumed by Catalog UI and\nScaffolder UI.")
 
-    Component(coreComponents, "Core Component Library", "React\n@backstage/core-components", "Shared, design-system-level\nUI components (Table, InfoCard,\nHeader, Sidebar, Progress,\nEmptyState, etc.) used by\nall plugin UIs. No business\nlogic — pure presentation.")
+    Component(coreComponents, "Core Component Library", "React\n@backstage/core-components", "Shared, design-system-level\nUI components (Table, InfoCard,\nHeader, Sidebar, Progress,\nEmptyState, etc.) used by\nall plugin UIs. No business\nlogic - pure presentation.")
 }
 
 Container(backend, "App Backend", "Node.js, TypeScript", "Hosts Catalog, Scaffolder,\nAuth, TechDocs, Search,\nPermission backend plugins.")

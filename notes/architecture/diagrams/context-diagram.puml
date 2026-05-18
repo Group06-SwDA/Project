@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include <c4/C4_Context.puml>
 LAYOUT_WITH_LEGEND()
 title System Context Diagram for Backstage
 
@@ -13,6 +13,7 @@ System_Ext(source_control, "Source Control", "GitHub / GitLab. Stores source cod
 System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions. Executes build and deployment pipelines.")
 System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP. Runs the actual services and workloads.")
 System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth. Manages user authentication and group resolution.")
+System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores generated TechDocs HTML assets when external storage is configured.")
 
 Rel(developer, backstage, "Browses catalog, scaffolds projects, reads docs", "HTTPS")
 Rel(platform_eng, backstage, "Installs plugins and configures system", "HTTPS / CLI")
@@ -22,4 +23,5 @@ Rel(backstage, source_control, "Reads catalog-info.yaml, creates repositories", 
 Rel(backstage, cicd, "Fetches build and pipeline status", "REST API / HTTPS")
 Rel(backstage, cloud_infra, "Queries cluster state", "REST API / HTTPS")
 Rel(backstage, idp, "Authenticates users and resolves groups", "OAuth2 / HTTPS")
+Rel(backstage, object_storage, "Reads/writes TechDocs HTML assets", "REST API / HTTPS")
 @enduml

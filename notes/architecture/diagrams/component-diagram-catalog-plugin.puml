@@ -1,32 +1,32 @@
 @startuml component-diagram-catalog-plugin
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!include <c4/C4_Component.puml>
 
 LAYOUT_WITH_LEGEND()
 
-title Component Diagram for Backstage — Catalog Plugin (Deep-Dive)
+title Component Diagram for Backstage - Catalog Plugin Deep-Dive
 
-Container_Boundary(catalogPlugin, "Catalog Plugin [TypeScript — @backstage/plugin-catalog-backend]") {
+Container_Boundary(catalogPlugin, "Catalog Plugin [TypeScript - @backstage/plugin-catalog-backend]") {
 
-    Component(catalogRouter, "CatalogRouter", "Express Router", "Exposes the Catalog REST API\n(/entities, /entity-by-name,\n/locations, /validate-entity).\nDelegates reads and writes\nto EntitiesCatalog and\nLocationAnalyzer.")
+    Component(catalogRouter, "CatalogRouter", "Express Router", "Exposes the Catalog REST API\n(/entities, /entities/by-name,\n/locations, /validate-entity).\nDelegates reads and writes\nto EntitiesCatalog and\nLocationAnalyzer.")
 
     Component(catalogBuilder, "CatalogBuilder", "TypeScript Class", "Plugin composition root.\nRegisters EntityProviders,\nEntityProcessors, and the\nStitchingOrchestrator.\nCalled once at startup by\nthe Backend DI container.")
 
-    Component(entitiesCatalog, "EntitiesCatalog", "TypeScript Interface\n+ DbEntitiesCatalog impl.", "Core read/write façade for\nthe entity store. Implements\nquery filtering, pagination,\nbatch upsert, and delete.\nImplements the port — the\nactual DB access is hidden.")
+    Component(entitiesCatalog, "EntitiesCatalog", "TypeScript Interface\n+ DbEntitiesCatalog impl.", "Core read/write facade for\nthe entity store. Implements\nquery filtering, pagination,\nbatch upsert, and delete.\nImplements the port - the\nactual DB access is hidden.")
 
     Component(refreshStateStore, "RefreshStateStore", "TypeScript Class", "Tracks the freshness state\nof every entity source URL.\nSchedules the next refresh\ntick and records errors.")
 
     Component(catalogProcessingEngine, "CatalogProcessingEngine", "TypeScript Class", "Orchestrates the ingestion\nloop: claims refresh items\nfrom RefreshStateStore,\nruns each item through the\nEntityProcessor chain, and\nhands results to the stitcher.")
 
-    Component(entityProvider, "EntityProvider\n(interface + impls)", "TypeScript Interface\n(GithubEntityProvider,\nStaticLocationProvider, …)", "Port for entity sources.\nEach implementation polls\nor webhook-receives raw\nentity mutations and emits\nthem to RefreshStateStore.\nImplementors are registered\nby CatalogBuilder.")
+    Component(entityProvider, "EntityProvider\n(interface + impls)", "TypeScript Interface\n(GithubEntityProvider,\nStaticLocationProvider, etc.)", "Port for entity sources.\nEach implementation polls\nor webhook-receives raw\nentity mutations and emits\nthem to RefreshStateStore.\nImplementors are registered\nby CatalogBuilder.")
 
-    Component(entityProcessor, "EntityProcessor\n(interface + chain)", "TypeScript Interface\n(BuiltinKindsEntityProcessor,\nAnnotationProcessor, …)", "Port for entity transformation.\nValidates, resolves relations,\nand enriches raw entities.\nProcessors are chained in\norder; each can emit derived\nentities or errors.")
+    Component(entityProcessor, "EntityProcessor\n(interface + chain)", "TypeScript Interface\n(BuiltinKindsEntityProcessor,\nAnnotationProcessor, etc.)", "Port for entity transformation.\nValidates, resolves relations,\nand enriches raw entities.\nProcessors are chained in\norder; each can emit derived\nentities or errors.")
 
     Component(stitchingOrchestrator, "StitchingOrchestrator", "TypeScript Class", "Reads all processed entity\nfragments for a given\nentityRef, merges them into\na single final record, and\nwrites the stitched entity\nback to the entity store.")
 
     Component(catalogClient, "CatalogClient\n(catalog-client pkg)", "TypeScript Package\nCatalogApi interface", "Public API boundary for\nexternal consumers (other\nplugins, frontend). Wraps\nHTTP calls to CatalogRouter\ninto typed Entity objects\ndefined in catalog-model.\nConsumers depend only on\nthe CatalogApi interface.")
 }
 
-ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Stores:\n• final_entities table\n• refresh_state table\n• relations table\n• search table\nAll within the Catalog's\nown schema + migrations.")
+ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Stores:\n* final_entities table\n* refresh_state table\n* relations table\n* search table\nwithin the Catalog plugin's\nown database scope and\nmigrations.")
 
 System_Ext(sourceControl, "Source Control", "GitHub / GitLab.\nHosts catalog-info.yaml\ndescriptor files.")
 

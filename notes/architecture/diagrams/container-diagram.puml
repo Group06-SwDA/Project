@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <c4/C4_Container.puml>
 LAYOUT_WITH_LEGEND()
 title Container Diagram for Backstage
 
@@ -11,13 +11,13 @@ System_Ext(source_control, "Source Control", "GitHub / GitLab.")
 System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions.")
 System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP.")
 System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth.")
-System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores pre-built TechDocs HTML assets. Treated as external — third-party managed service not deployed as part of Backstage.")
+System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores generated TechDocs HTML assets. Treated as external third-party infrastructure, not deployed as part of Backstage.")
 
 System_Boundary(backstage_boundary, "Backstage System") {
-    Container(frontend, "Frontend SPA", "React, TypeScript", "Single-Page Application running in the browser. Hosts all frontend plugins: Catalog UI, Scaffolder UI, TechDocs reader, Kubernetes dashboard, and Search.")
+    Container(frontend, "Frontend SPA", "React, TypeScript", "Single-page application running in the browser. Hosts frontend plugins: Catalog UI, Scaffolder UI, TechDocs reader, Kubernetes dashboard, and Search.")
     Container(app_backend, "App Backend", "Node.js, TypeScript", "Node.js runtime that wires backend plugins together via a dependency injection container. In the default deployment, backend plugins run within a single process; each plugin is architecturally isolated and communicates with other plugins through HTTP APIs rather than shared code.")
-    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Persistent store for all Backstage data. Each backend plugin owns a separate logical schema with independent migrations.")
-    ContainerDb(cache, "Cache Store", "Redis", "Optional distributed cache used by backend plugins. Each plugin has its own logically isolated namespace.")
+    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Persistent store for Backstage data. Database access is scoped per plugin, commonly through separate plugin databases or isolated tables and migrations.")
+    ContainerDb(cache, "Cache Store", "Redis / Keyv-compatible cache", "Optional distributed cache used by backend plugins. Each plugin has its own logically isolated namespace.")
 }
 
 Rel(developer, frontend, "Uses portal", "HTTPS")
@@ -26,7 +26,7 @@ Rel(eng_manager, frontend, "Views service and team health", "HTTPS")
 
 Rel(frontend, app_backend, "API calls to backend plugins", "JSON / HTTPS")
 Rel(app_backend, db, "Reads and writes via Knex query builder", "SQL / TCP")
-Rel(app_backend, cache, "Caches frequent lookups via Keyv", "Redis / TCP")
+Rel(app_backend, cache, "Caches frequent lookups via Keyv", "Cache protocol / TCP")
 
 Rel(app_backend, idp, "Authenticates users, resolves groups", "OAuth2 / HTTPS")
 Rel(app_backend, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
