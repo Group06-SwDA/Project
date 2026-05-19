@@ -23,5 +23,5 @@ Rel(backstage, source_control, "Reads catalog-info.yaml, creates repositories", 
 Rel(backstage, cicd, "Fetches build and pipeline status", "REST API / HTTPS")
 Rel(backstage, cloud_infra, "Queries cluster state", "REST API / HTTPS")
 Rel(backstage, idp, "Authenticates users and resolves groups", "OAuth2 / HTTPS")
-Rel(backstage, object_storage, "Reads/writes TechDocs HTML assets", "REST API / HTTPS")
+Rel(backstage, object_storage, "Reads/writes TechDocs HTML assets\nwhen external storage is configured", "REST API / HTTPS")
 @enduml

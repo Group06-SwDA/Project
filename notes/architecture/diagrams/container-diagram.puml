@@ -17,7 +17,7 @@ System_Boundary(backstage_boundary, "Backstage System") {
     Container(frontend, "Frontend SPA", "React, TypeScript", "Single-page application running in the browser. Hosts frontend plugins: Catalog UI, Scaffolder UI, TechDocs reader, Kubernetes dashboard, and Search.")
     Container(app_backend, "App Backend", "Node.js, TypeScript", "Node.js runtime that wires backend plugins together via a dependency injection container. In the default deployment, backend plugins run within a single process; each plugin is architecturally isolated and communicates with other plugins through HTTP APIs rather than shared code.")
     ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Persistent store for Backstage data. Database access is scoped per plugin, commonly through separate plugin databases or isolated tables and migrations.")
-    ContainerDb(cache, "Cache Store", "Redis / Keyv-compatible cache", "Optional distributed cache used by backend plugins. Each plugin has its own logically isolated namespace.")
+    ContainerDb(cache, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional distributed cache used by backend plugins. Each plugin has its own logically isolated namespace.")
 }
 
 Rel(developer, frontend, "Uses portal", "HTTPS")
@@ -32,5 +32,5 @@ Rel(app_backend, idp, "Authenticates users, resolves groups", "OAuth2 / HTTPS")
 Rel(app_backend, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
 Rel(app_backend, cicd, "Fetches pipeline status", "REST API / HTTPS")
 Rel(app_backend, cloud_infra, "Queries cluster state", "REST API / HTTPS")
-Rel(app_backend, object_storage, "Reads/writes TechDocs HTML assets", "REST API / HTTPS")
+Rel(app_backend, object_storage, "Reads/writes TechDocs HTML assets\nwhen external storage is configured", "REST API / HTTPS")
 @enduml

@@ -7,11 +7,11 @@ title Component Diagram for Backstage - Catalog Plugin Deep-Dive
 
 Container_Boundary(catalogPlugin, "Catalog Plugin [TypeScript - @backstage/plugin-catalog-backend]") {
 
-    Component(catalogRouter, "CatalogRouter", "Express Router", "Exposes the Catalog REST API\n(/entities, /entities/by-name,\n/locations, /validate-entity).\nDelegates reads and writes\nto EntitiesCatalog and\nLocationAnalyzer.")
+    Component(catalogRouter, "CatalogRouter", "Express Router", "Exposes the Catalog REST API\n(/entities/by-query,\n/entities/by-name/:kind/:namespace/:name,\n/locations, /validate-entity).\nDelegates reads and writes\nto EntitiesCatalog and\nLocationAnalyzer.")
 
     Component(catalogBuilder, "CatalogBuilder", "TypeScript Class", "Plugin composition root.\nRegisters EntityProviders,\nEntityProcessors, and the\nStitchingOrchestrator.\nCalled once at startup by\nthe Backend DI container.")
 
-    Component(entitiesCatalog, "EntitiesCatalog", "TypeScript Interface\n+ DbEntitiesCatalog impl.", "Core read/write facade for\nthe entity store. Implements\nquery filtering, pagination,\nbatch upsert, and delete.\nImplements the port - the\nactual DB access is hidden.")
+    Component(entitiesCatalog, "EntitiesCatalog", "TypeScript Interface\n+ DB-backed implementation", "Core read/write facade for\nthe entity store. Implements\nquery filtering, pagination,\nbatch upsert, and delete.\nImplements the port - the\nactual DB access is hidden.")
 
     Component(refreshStateStore, "RefreshStateStore", "TypeScript Class", "Tracks the freshness state\nof every entity source URL.\nSchedules the next refresh\ntick and records errors.")
 
@@ -52,8 +52,8 @@ Rel(stitchingOrchestrator, entitiesCatalog, "Reads fragments,\nwrites stitched e
 Rel(entitiesCatalog, postgres, "CRUD on entity records,\nrelations, search rows", "SQL/TCP via Knex")
 Rel(refreshStateStore, postgres, "Reads/writes refresh_state\nand error logs", "SQL/TCP via Knex")
 
-Rel(searchPlugin, catalogClient, "GET /catalog/entities\n(collator fetches all)", "HTTP")
-Rel(scaffolderPlugin, catalogClient, "GET /catalog/entities\n?filter=kind=Template", "HTTP")
+Rel(searchPlugin, catalogClient, "GET /entities/by-query\n(collator fetches final entities)", "HTTP")
+Rel(scaffolderPlugin, catalogClient, "GET /entities/by-query\n?filter=kind=Template", "HTTP")
 Rel(permissionPlugin, catalogClient, "GET entity ownership\nfor policy resolution", "HTTP")
 Rel(frontendCatalogUI, catalogClient, "Catalog API calls\nvia useApi(catalogApiRef)", "JSON/HTTPS")
 
