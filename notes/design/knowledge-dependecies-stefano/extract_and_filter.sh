@@ -30,6 +30,7 @@ BEGIN { RS=""; ORS="\n\n"; FS="\n" }
         if (p ~ /\.(test|spec|stories)\.(ts|tsx)$/) continue
         if (p ~ /\.d\.ts$/) continue
         if (p !~ /\.(ts|tsx)$/) continue
+        if (p !~ /^(packages|plugins)\//) continue
         out = out "\n" $i; count++
     }
     if (count == 0 || count > 30) next

@@ -1,7 +1,43 @@
 ==> Extracting git log from ./Backstage_snapshot ...
     51741 commits extracted -> ./git_log.log
 ==> Applying filters ...
-    23630 commits after filtering -> ./git_log_filtered.log
+    23050 commits after filtering -> ./git_log_filtered.log
 
 
-docker run -v /home/stealve/code_maat:/data code-maat -l /data/git_log_filtered.log -c git2 -a coupling --min-revisions 5 --min-coupling 30 > ../coupling.csv
+
+docker run -v /home/stealve/code_maat:/data code-maat -l /data/git_log_filtered.log -c git2 -a coupling --min-revs 5 --min-coupling 30 > ../coupling.csv
+
+
+=== TOP 15 FILES BY KNOWLEDGE COUPLING COUNT ===
+ 1.  14 couplings  avg degree:  47.4  plugins/catalog/src/components/HasSubcomponentsCard/HasSubcomponentsCard.tsx
+ 2.  13 couplings  avg degree:  44.8  plugins/catalog/src/components/HasSystemsCard/HasSystemsCard.tsx
+ 3.  12 couplings  avg degree:  52.2  packages/cli/src/modules/info/index.ts
+ 4.  12 couplings  avg degree:  50.0  packages/cli/src/modules/translations/index.ts
+ 5.  12 couplings  avg degree:  41.9  plugins/scaffolder-backend-module-github/src/actions/github.ts
+ 6.  12 couplings  avg degree:  47.8  plugins/scaffolder-backend-module-github/src/actions/githubRepoCreate.ts
+ 7.  11 couplings  avg degree:  56.5  plugins/scaffolder-backend-module-github/src/actions/githubAutolinks.ts
+ 8.  11 couplings  avg degree:  58.8  plugins/scaffolder-backend-module-github/src/actions/githubIssuesLabel.ts
+ 9.  11 couplings  avg degree:  60.0  plugins/scaffolder-backend-module-github/src/actions/githubDeployKey.ts
+10.  11 couplings  avg degree:  65.4  packages/cli/src/modules/migrate/index.ts
+11.  11 couplings  avg degree:  36.7  packages/cli/src/wiring/CliInitializer.ts
+12.  11 couplings  avg degree:  55.5  packages/cli/src/modules/config/index.ts
+13.  11 couplings  avg degree:  46.5  plugins/github-release-manager/src/api/PluginApiClient.ts
+14.  11 couplings  avg degree:  51.3  plugins/scaffolder-backend-module-github/src/actions/githubBranchProtection.ts
+15.  11 couplings  avg degree:  45.6  plugins/scaffolder-backend-module-github/src/actions/githubWebhook.ts
+
+=== 15 FILES WITH FEWEST KNOWLEDGE COUPLINGS ===
+ 1.   1 couplings  avg degree: 100.0  packages/cli-node/src/pacman/PackageManager.ts
+ 2.   1 couplings  avg degree: 100.0  packages/cli-node/src/pacman/yarn/Yarn.ts
+ 3.   1 couplings  avg degree: 100.0  plugins/scaffolder/src/filter/EntityFilterGroupsProvider.tsx
+ 4.   1 couplings  avg degree: 100.0  plugins/scaffolder/src/filter/context.ts
+ 5.   1 couplings  avg degree: 100.0  plugins/catalog-backend-module-azure/src/providers/config.ts
+ 6.   1 couplings  avg degree: 100.0  plugins/catalog-backend-module-azure/src/providers/types.ts
+ 7.   1 couplings  avg degree: 100.0  packages/cli/src/modules/start/alpha.ts
+ 8.   1 couplings  avg degree: 100.0  packages/cli/src/modules/start/index.ts
+ 9.   1 couplings  avg degree: 100.0  plugins/graphql/src/index.ts
+10.   1 couplings  avg degree: 100.0  plugins/graphql/src/setupTests.ts
+11.   1 couplings  avg degree: 100.0  plugins/register-component/src/index.ts
+12.   1 couplings  avg degree: 100.0  plugins/register-component/src/plugin.ts
+13.   1 couplings  avg degree: 100.0  packages/cli/src/modules/build/lib/optionsParser.ts
+14.   1 couplings  avg degree: 100.0  packages/cli/src/modules/lint/lib/optionsParser.ts
+15.   1 couplings  avg degree: 100.0  plugins/github-actions/src/components/Widget/Widget.tsx
