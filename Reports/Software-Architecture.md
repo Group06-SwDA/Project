@@ -182,12 +182,41 @@ The Frontend SPA is also a composition runtime. It does not contain all user-fac
 
 **Core Component Library** provides reusable presentation components such as tables, headers, sidebars, progress indicators, and empty states. It is shared UI infrastructure rather than business logic.
 
+### 3.5 SOLID violations
+ 
+`plugins/catalog-backend`
+
+The ingestion pipeline: providers, processors, processing engine, stitcher, database access. This package contains the most significant SOLID violations in the system.
+
+| Principle | Status | Notes |
+| ----------- | -------- | ------- |
+| SRP | **Violated** | `DefaultCatalogProcessingEngine` (510 LOC) mixes polling-loop control, the task pipeline, stitching coordination, orphan cleanup, hash-based change detection, OpenTelemetry tracing, event emission, metrics, error event publishing, and cache-TTL bookkeeping. Six or more distinct reasons to change. |
+| SRP | **Violated** | `DefaultCatalogProcessingOrchestrator` (464 LOC) similarly bundles the processor pipeline, emit collection, processor cache wiring, relation accumulation, and entity validation. |
+| ISP | **Violated** | `CatalogProcessor` in `plugin-catalog-node` is a fat interface bundling four unrelated lifecycle roles in one type: `readLocation`, `preProcessEntity`, `validateEntityKind`, `postProcessEntity`, plus `getProcessorName` and `getPriority`. All hooks are optional, which mitigates the impact, but the underlying smell remains: a single class type expresses four separable extension points. |
+
+
+
 ---
 
 ## 4. Conclusion
 
-The main architectural lesson from Backstage is that plugin boundaries are the product. Backstage accepts the complexity of dependency injection, API references, extension points, and plugin-scoped persistence so that organizations can assemble a portal from many independently evolving features. This gives strong modularity and customization, but it also means the platform team must manage configuration, ownership, plugin compatibility, and operational consistency carefully.
+---
 
-The biggest trade-off is between centralization and independence. The Catalog becomes the shared semantic hub for ownership, metadata, and relationships, which makes the rest of the portal coherent. At the same time, that central role makes the Catalog a critical dependency: if entity quality, annotations, or ownership data are poor, downstream plugins such as Search, TechDocs, Permissions, and CI/CD views become less useful.
+## Architectural Characteristics
 
-If I were improving the architecture, I would focus less on changing the core container structure and more on strengthening boundaries around real deployments: clearer plugin ownership, stricter API contracts, automated checks for catalog entity quality, and explicit decisions about which plugins deserve separate backend deployments. In other words, Backstage already has the right architectural mechanisms; the main challenge is using them with discipline.
+Backstage's **driving characteristic is extensibility**; the others serve it or are constraints accepted to reach it.
+
+| Characteristic | How the architecture supports it | Trade-off / limit |
+|---|---|---|
+| **Extensibility / Modifiability** | Plugin boundaries (each feature = own package, routes, DB scope); extension points (typed hooks — no forking); DI via `ServiceRef` / `ApiRef` (depend on interfaces, swap implementations) | High learning curve; many packages to govern |
+| **Testability** | Falls out of DI — no plugin imports a concrete dependency, so mocks inject through the same `ServiceRef` / `ApiRef` used in production | — |
+| **Scalability** | Stateless backend (no in-memory sessions, no local disk writes) → horizontal scaling is a replica-count change, no code change | Plugins can't scale independently in the single-process default |
+| **Maintainability** | Yarn/Lerna monorepo — one lockfile, one toolchain (`@backstage/cli`); cross-plugin refactors atomic | CI cost across 100+ packages |
+| **Fault isolation** | Plugin-scoped DB connections, no shared mutable state — one plugin's data fault can't corrupt another | Single process: an unhandled crash still drops all plugins |
+| **Deployability** | HTTP-only inter-plugin comms via runtime discovery → plugins splittable into separate deployments later | Split needs startup-order / config / ownership changes |
+
+**Net:** architecture genuinely supports its driving characteristic; recurring cost = single-process default trading per-plugin independence for operational simplicity.
+
+---
+
+Caveman: 6 rows, mechanism + limit each. Want fewer rows (drop Deployability/Fault isolation) or tighter cells?
