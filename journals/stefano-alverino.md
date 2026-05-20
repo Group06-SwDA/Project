@@ -91,3 +91,4 @@
 ### 2026-05-20
 
 - Reviewing design report
+- Reviewed some errors in knowledge dependencies
