@@ -49,3 +49,15 @@
 
 - Ended report about ADRs
 
+### 2026-05-07
+
+- Meeting with the group to share the knowledge about what is been done.
+
+### 2026-05-13
+
+- done a review for C4 diagrams.
+- Added evidence trail for the study of SOLID and where violation have been found.
+
+### 2026-05-20
+
+- Started the redaction of architecture's report.
