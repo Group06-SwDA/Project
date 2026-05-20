@@ -1,8 +1,10 @@
 # Software Design
+
 ## Dependencies
 
 ### Code Dependencies
-Code dependencies were extracted using the following `madge` command 
+
+Code dependencies were extracted using the following `madge` command
 
 ```bash
 madge --json \
@@ -12,7 +14,8 @@ madge --json \
   /Backstage/Backstage_snapshot/packages/ \
   /Backstage/Backstage_snapshot/plugins/ \
   > deps.json
-``` 
+```
+
 It builds a dependency graph from `import` statements in `.ts` and `.tsx` files. Test files, mocks, fixtures, stories, and type declarations were excluded to focus on production code only.
 
 The analysis covers two top-level directories of the Backstage monorepo: `packages/`, which contains core libraries and shared infrastructure and `plugins/`, which contains independently deployable feature modules.
@@ -25,13 +28,12 @@ Using a python script it was possible to visualize dependency distribution
 The large majority of files have zero or very few dependencies.
 
 The file which has the most dependencies is `packages/create-app/src/lib/versions.ts`, it references every package in the monorepo to keep version numbers aligned across releases. Its high count is structural.
-The `models/index.ts` files are generated automatically from OpenAPI schemas and re-export every model in one place. 
+The `models/index.ts` files are generated automatically from OpenAPI schemas and re-export every model in one place.
 Other notable entries include `packages/ui/src/index.ts` and `packages/core-components/src/components/index.ts`, both are public entry points for component libraries, designed to aggregate exports for consumers. `plugins/catalog-backend/src/service/CatalogBuilder.ts` is an exception: it is a manually written orchestrator that wires together many catalog services.
 
 ![](./Software_Deisgn_img/most15.png)
 
-
-A large number of files have zero dependencies, such as components, icon definitions, theme tokens, and default configuration values. They are most common in `packages/app-defaults` and `packages/app-legacy` which are packages that provide stable defaults and are designed so that other files depend on them.
+A large number of files have zero dependencies, such as components, icon definitions, theme tokens, and default configuration values. The packages with the most leaf files are `ui` (101), `catalog-backend` (72), `scaffolder-backend` (66), and `core-components` (61), reflecting the large number of self-contained components and handlers concentrated in these areas.
 
 ![](./Software_Deisgn_img/least15.png)
 
@@ -50,11 +52,12 @@ docker run -v /home/stealve/code_maat:/data code-maat \
   --min-revisions 5 --min-coupling 30 \
   > ../coupling.csv
 ```
+
 In the obtained output the `degree` value (0–100%) represents the share of commits in which both files of a pair were modified together.
 The `--min-revisions 5` parameter excludes file pairs where at least one file has been modified fewer than 5 times in total.
 The `--min-coupling 30` parameter excludes pairs whose degree is below 30%.
 The following graphs show how many co-change partners each file has.
- 
+
 ![](./Software_Deisgn_img/knowledge_distribution_donut.png)
 ![](./Software_Deisgn_img/knowledge_histogram.png)
 
@@ -69,40 +72,42 @@ The second group of files is the `plugins/scaffolder-backend-module-github/src/a
 
 The last group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
 
-The following bar chart shows how many files having only one partner there are in each package. 
+The following bar chart shows how many files having only one partner there are in each package.
 ![](./Software_Deisgn_img/least15_knowledge.png)
 
-Several files have only one coupled partner but a degree of 100% so every commit that touched one also touched the other. Examples include `packages/cli-node/src/pacman/PackageManager.ts` with `Yarn.ts` and `plugins/catalog-backend-module-azure/src/providers/config.ts` with`types.ts`. Their 100% degree reflects a strict co-evolution rule.
+Several files have only one coupled partner but a degree of 100% so every commit that touched one also touched the other. Examples include `packages/cli-node/src/pacman/PackageManager.ts` with `Yarn.ts` and `plugins/catalog-backend-module-azure/src/providers/config.ts` with `types.ts`. Their 100% degree reflects a strict co-evolution rule.
 
-### Comparison 
+### Comparison
+
 Each file pair was assigned a code score based on the direction of static imports:
 
 | Import relationship | Code score |
-|---------------------|------------|
+| ------------------- | ---------- |
 | No import           | 0          |
-| One-way (A → B)     | 50         |
+| One-way (A → B)    | 50         |
 | Bidirectional       | 100        |
 
-Bidirectional contains both direct and indirect dependencies. The first ones are certainly the circular dependencies, but it is not possible to know for sure the nature of the last ones. 
+Bidirectional contains both direct and indirect dependencies. The first ones are certainly the circular dependencies, but it is not possible to know for sure the nature of the last ones.
 The knowledge score is the `degree` from `coupling.csv` (0–100%). Combining the two scores places each pair in one of four quadrants:
 
-| Quadrant | Code | Knowledge | Interpretation |
-|----------|------|-----------|----------------|
-| **Aligned** | high | high | Coupling is consistent |
-| **Hidden dependency** | low | high | Always co-changed, no import — architectural smell |
-| **Stale import** | high | low | Import declared but rarely co-changed — stable or vestigial |
-| **Independent** | low | low | No coupling of either kind  |
+| Quadrant                    | Code | Knowledge | Interpretation                                               |
+| --------------------------- | ---- | --------- | ------------------------------------------------------------ |
+| **Aligned**           | high | high      | Coupling is consistent                                       |
+| **Hidden dependency** | low  | high      | Always co-changed, no import — architectural smell          |
+| **Stale import**      | high | low       | Import declared but rarely co-changed — stable or vestigial |
+| **Independent**       | low  | low       | No coupling of either kind                                   |
 
 It is possible to represent the relationship between knowledge and code dependencies using the following scatter matrix. Each point in this plot is a pair of files.
 ![](./Software_Deisgn_img/scatter_quadrants.png)
 
-The majority of pairs are in the Independent quadrant, the expected baseline for a large modular codebase. The Aligned quadrant confirms that many statically coupled files are also co-changed frequently. The two asymmetric quadrants are the most analytically interesting.
+The majority of pairs are in the Stale Import quadrant (8162 pairs, over 80%), reflecting a codebase where many static dependencies are stable abstractions rarely modified together. The Independent quadrant is the second largest (1068 pairs). The Aligned quadrant, though the smallest (109 pairs), confirms that statically coupled files are also frequently co-changed. The two asymmetric quadrants are the most analytically interesting.
 
 The pairs in the hidden dependencies quadrant are frequently committed together but do not have static imports. It reveals an implicit and logical coupling not explicitly formalized.
 ![](./Software_Deisgn_img/focused_hidden_dep.png)
 
 The pairs in the stale import quadrant have a static import relationship but rarely appear in the same commit. Two interpretations are possible. The first is positive: the imported module is a stable abstraction that encapsulates change well, so the importing file almost never needs updating when the dependency changes. The second may be unsafe: the import may be vestigial so it was declared in the past but it is no longer actively used.
 ![](./Software_Deisgn_img/focused_stale_import.png)
+
 ## Design Patterns
 
 ### Facade
@@ -133,8 +138,8 @@ An alternative to the Strategy could be the Template method, where a base abstra
 In template method, TemplateAction becomes an abstract class defining handler() as the abstract step. Concrete actions are subclasses that override handler() through inheritance. The structure is fixed at compile time but makes the algorithm structure explicit. Despite having many drawbacks for `Backstage` system the template method could be implemented as follows.
 ![](./Software_Deisgn_img/TemplateAction_Template.png)
 
-
 ### Builder
+
 The third analysed pattern is a fluent-builder, a creational pattern, used to build a complex object piece by piece using several methods including the last one to finalize its creation. Forcing all DevApp configuration into a single constructor call would be unreadable and hard to extend.
 
 In `Backstage` [`DevAppBuilder`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L97) in `render.tsx` exposes methods like `registerPlugin()`, `addPage()`, and `addThemes()` that populate private arrays and return `this` for chaining. The React component tree is assembled only when [`build()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L229) is called inside [`render()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L309) which is the last method that the client calls to insert the DevApp in the DOM. [`createDevApp()`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/master/packages/dev-utils/src/devApp/render.tsx#L340) instantiatiates a new builder. For `Backstage`, differently from pure GoF, there is only a concrete builder without an interface and each client is also a director since it chains every method it needs. One example of client is the [`catalog graph plugin`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/plugins/catalog-graph/dev/index.tsx#L167-234).
@@ -143,14 +148,14 @@ In `Backstage` [`DevAppBuilder`](https://github.com/Group06-SwDA/Backstage_snaps
 
 **Alternative: Abstract Factory**
 
-A possible alternative is the following Abstract Factory. The concrete products rapresent the actual specific DOM components created by the builders. 
+A possible alternative is the following Abstract Factory. The concrete products rapresent the actual specific DOM components created by the builders.
 ![](./Software_Deisgn_img/DevAppBuilder_abstract_factory.svg)
 The pro is that it is not necessary to build the pipeline every time a DevApp is needed. The drawback is that is not incremental and not flexible. Each DevApp requires its own factory.
- 
-### Observer 
+
+### Observer
 
 The Observer pattern, a behavioral pattern, is used when some changes in an object, called subject, influence others called observers. The subject keeps a collection of observers and notifies them of its changes.
-In `Backstage` the concrete subject is represented by [`BehaviorSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L125) which implements the [`Observable<T> type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L63) and `ZenObservable.SubscriptionObserver<T>` which comes from the external library `zen-observable`. Both of them play the role of the GoF subject interface. In particular, the former exposes the `subscribe()` method and indirectly the `unsubscribe()` method through the [`Subscription type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L33) and the latter exposes the methods `next()`, `error()` and `complete()` which correspond to the `notify()` in GoF. Specifically in `Backstage` `ZenObservable.SubscriptionObserver<T>` also represents the observer interface, so from the observer side subscribers implement this methods to receive updates on the subject, and from the subject side they are implemented to notify a new theme value.`BehaviorSubject` keeps a set of [`ZenObservable.SubscriptionObserver<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L156-158) a collection of subscribers. One example of concrete observer is a lambda function defined in [`AppThemeSelector`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L42-48) which is passed to the overloaded `subscribe` method instead of the one accepting only an [`Observer type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L22). The `Observer type` is not actually used in this example but could be used by other observer implementation. To summarize the user changes a theme and the subject notifies all observers about this change and each one implements its own logic, for example the one analysed persists the themeId in the browser. 
+In `Backstage` the concrete subject is represented by [`BehaviorSubject`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L125) which implements the [`Observable<T> type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L63) and `ZenObservable.SubscriptionObserver<T>` which comes from the external library `zen-observable`. Both of them play the role of the GoF subject interface. In particular, the former exposes the `subscribe()` method and indirectly the `unsubscribe()` method through the [`Subscription type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L33) and the latter exposes the methods `next()`, `error()` and `complete()` which correspond to the `notify()` in GoF. Specifically in `Backstage` `ZenObservable.SubscriptionObserver<T>` also represents the observer interface, so from the observer side subscribers implement this methods to receive updates on the subject, and from the subject side they are implemented to notify a new theme value.`BehaviorSubject` keeps a set of [`ZenObservable.SubscriptionObserver<T>`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/lib/subjects.ts#L156-158) a collection of subscribers. One example of concrete observer is a lambda function defined in [`AppThemeSelector`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/core-app-api/src/apis/implementations/AppThemeApi/AppThemeSelector.ts#L42-48) which is passed to the overloaded `subscribe` method instead of the one accepting only an [`Observer type`](https://github.com/Group06-SwDA/Backstage_snapshot/blob/5b61c2f33998f647b59f413bb2747983af15e8db/packages/types/src/observable.ts#L22). The `Observer type` is not actually used in this example but could be used by other observer implementation. To summarize the user changes a theme and the subject notifies all observers about this change and each one implements its own logic, for example the one analysed persists the themeId in the browser.
 
 ![](./Software_Deisgn_img/AppThemeSelector_observer.svg)
 
