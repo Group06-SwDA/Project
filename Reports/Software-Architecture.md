@@ -218,5 +218,3 @@ Backstage's **driving characteristic is extensibility**; the others serve it or 
 **Net:** architecture genuinely supports its driving characteristic; recurring cost = single-process default trading per-plugin independence for operational simplicity.
 
 ---
-
-Caveman: 6 rows, mechanism + limit each. Want fewer rows (drop Deployability/Fault isolation) or tighter cells?
