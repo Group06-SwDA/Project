@@ -83,3 +83,11 @@
 ### 2026-05-10
 
 - Produced knowledge-code dependencies comparisions
+
+### 2026-05-15
+
+- Reviewed Observer design pattern
+
+### 2026-05-20
+
+- Reviewing design report
