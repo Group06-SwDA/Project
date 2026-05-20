@@ -61,3 +61,4 @@
 ### 2026-05-20
 
 - Started the redaction of architecture's report.
+- Added to the report the SOLID violations found
