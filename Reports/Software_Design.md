@@ -16,9 +16,9 @@ madge --json \
   > deps.json
 ```
 
-It builds a dependency graph from `import` statements in `.ts` and `.tsx` files. Test files, mocks, fixtures, stories, and type declarations were excluded to focus on production code only.
+It builds a dependency graph from `import` statements in `.ts` and `.tsx` files. Test files, mocks, fixtures, stories, and type declarations were excluded using the options above to focus on production code only.
 
-The analysis covers two top-level directories of the Backstage monorepo: `packages/`, which contains core libraries and shared infrastructure and `plugins/`, which contains independently deployable feature modules.
+The analysis covers two top-level directories of the Backstage monorepo: `packages/`, which contains core libraries and shared infrastructure and `plugins/`, which contains independently deployable feature modules. Madge automatically excludes the `node_modules` folder.
 
 Using a python script it was possible to visualize dependency distribution
 
@@ -41,7 +41,29 @@ A large number of files have zero dependencies, such as components, icon definit
 
 Knowledge dependencies measure how often two files are changed together in the same commit. Unlike code dependencies, they are derived from the history of the repository and reflect how the development team actually works in practice.
 
-The git log was extracted from the Backstage snapshot (2026-04-09), then filtered using a bash script to remove bot commits, merge commits, and unusually large changesets, leaving 23630 commits for the analysis.
+The git log was extracted from the Backstage snapshot (2026-04-09), then filtered using a bash script to remove bot commits, merge commits, and unusually large changesets. The script filters data in the same way as code dependencies are filtered to make the comparison more meaningful. As a result of this filtering the consideres files are `.ts` and `.tsx` files and the ones which path begins with `packages/` or `plugins/`. Excluded files are dependency folders, build and configuration files, test folders and stylesheets. This way the filtered log file contains only human-made commits related to production code. 
+
+```bash
+    if (tolower(header) ~ /dependabot|renovate|\[bot\]|goalie|imgbot|github-actions/) next
+
+    out = header; count = 0
+    for (i = 2; i <= NF; i++) {
+        if ($i == "") continue
+        split($i, f, "\t")
+        if (length(f) < 3) continue
+        p = tolower(f[3])
+        if (p ~ /^(\.changeset|node_modules|dist|build|coverage|\.yarn|\.storybook)\//) continue
+        if (p ~ /\/__mocks__\/|\/__fixtures__\/|\/__tests__\//) continue
+        if (p ~ /\.(test|spec|stories)\.(ts|tsx)$/) continue
+        if (p ~ /\.d\.ts$/) continue
+        if (p !~ /\.(ts|tsx)$/) continue
+        if (p !~ /^(packages|plugins)\//) continue
+        out = out "\n" $i; count++
+    }
+    if (count == 0 || count > 30) next
+    print out
+```
+>Above a snippet of the filtering script.
 
 Coupling analysis was performed using `code-maat`
 
@@ -66,19 +88,18 @@ The following chart represents a ranking of the top 15 files in terms of couplin
 
 ![](./Software_Deisgn_img/top15_knowledge.png)
 
-The first file is `HasSubcomponentsCard/HasSubcomponentsCard.tsx` with 14 coupled partners and an average degree of 47.4% the highest coupling count in the list. This catalog UI component evolves together with several other relationship cards (`HasSystemsCard`, `HasResourcesCard`, etc.).
+The file with the highest coupling count is `HasSubcomponentsCard.tsx` with 14 coupled partners and average degree 47.4%, followed closely by `HasSystemsCard.tsx` with 13 and average degree 44.8%. Both are catalog UI components that evolve together with other relationship cards (`HasResourcesCard`, `HasComponentsCard`, etc.), likely because they share a common data-fetching pattern that is refactored as a group.
 
-The second group of files is the `plugins/scaffolder-backend-module-github/src/actions/` group: `github.ts`, `githubRepoCreate.ts`, `githubAutolinks.ts`, `githubIssuesLabel.ts`, `githubDeployKey.ts`, `githubBranchProtection.ts`, and `githubWebhook.ts` all appear in the top 15, with 11–12 coupled partners each and average degrees between 42% and 60%. These files implement individual GitHub actions for the Backstage scaffolder and follow a shared interface. When one action is added or modified, the others are typically updated at the same time to maintain consistency.
+The second group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
 
-The last group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
+The last group of files is the `plugins/scaffolder-backend-module-github/src/actions/` group: `github.ts`, `githubRepoCreate.ts`, `githubAutolinks.ts`, `githubIssuesLabel.ts`, `githubDeployKey.ts`, `githubBranchProtection.ts`, and `githubWebhook.ts` all appear in the top 15, with 11–12 coupled partners each and average degrees between 42% and 60%. These files implement individual GitHub actions for the Backstage scaffolder and follow a shared interface. When one action is added or modified, the others are typically updated at the same time to maintain consistency.
 
-The following bar chart shows how many files having only one partner there are in each package.
 ![](./Software_Deisgn_img/least15_knowledge.png)
 
-Several files have only one coupled partner but a degree of 100% so every commit that touched one also touched the other. Examples include `packages/cli-node/src/pacman/PackageManager.ts` with `Yarn.ts` and `plugins/catalog-backend-module-azure/src/providers/config.ts` with `types.ts`. Their 100% degree reflects a strict co-evolution rule.
+In total, 753 files across the codebase have exactly one coupled partner. The package with the most such files is cli (57), followed by catalog-backend (42), scaffolder (36), and scaffolder-backend (33). This means that a large share of files in these packages co-evolve with only one other file, suggesting highly localized changes rather than broad cross-cutting modifications. Several of these pairs have a degree of 100%, every commit that touched one also touched the other. Examples include `packages/cli-node/src/pacman/PackageManager.ts` with `Yarn.ts` and `plugins/scaffolder/src/filter/EntityFilterGroupsProvider.tsx` with `context.ts`, reflecting a strict co-evolution rule rather than high activity.
 
 ### Comparison
-
+Using the filters described before it is possible to work with the same set of files.
 Each file pair was assigned a code score based on the direction of static imports:
 
 | Import relationship | Code score |
@@ -106,7 +127,7 @@ The pairs in the hidden dependencies quadrant are frequently committed together 
 ![](./Software_Deisgn_img/focused_hidden_dep.png)
 
 The pairs in the stale import quadrant have a static import relationship but rarely appear in the same commit. Two interpretations are possible. The first is positive: the imported module is a stable abstraction that encapsulates change well, so the importing file almost never needs updating when the dependency changes. The second may be unsafe: the import may be vestigial so it was declared in the past but it is no longer actively used.
-![](./Software_Deisgn_img/focused_stale_import.png)
+
 
 ## Design Patterns
 
