@@ -5,6 +5,8 @@ LAYOUT_WITH_LEGEND()
 
 title Component Diagram for Backstage - Frontend SPA
 
+Person(user, "Portal User", "Developer, Platform Engineer, or Engineering Manager. Interacts with the portal through the browser.")
+
 Container_Boundary(frontend, "Frontend SPA [React, TypeScript]") {
 
     Component(appShell, "App Shell", "React / @backstage/app-defaults\n@backstage/core-app-api", "Top-level composition root of\nthe frontend. Declares all\ninstalled plugins, registers\nroutes, mounts the sidebar,\nprovides the theme, and\ncreates the ApiRegistry.")
@@ -27,6 +29,8 @@ Container_Boundary(frontend, "Frontend SPA [React, TypeScript]") {
 }
 
 Container(backend, "App Backend", "Node.js, TypeScript", "Hosts Catalog, Scaffolder,\nAuth, TechDocs, Search,\nPermission backend plugins.")
+
+Rel(user, appShell, "Loads and uses the portal\n(navigation, sign-in, plugin pages)", "HTTPS")
 
 Rel(appShell, apiRegistry, "Creates ApiProvider;\nregisters all API\nimplementations at startup", "In-process / React context")
 Rel(appShell, identityAuth, "Mounts SignInPage;\ninitialises and registers\nIdentityApi implementation", "React render tree")
