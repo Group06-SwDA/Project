@@ -88,11 +88,13 @@ The following chart represents a ranking of the top 15 files in terms of couplin
 
 ![](./Software_Deisgn_img/top15_knowledge.png)
 
-The file with the highest coupling count is `HasSubcomponentsCard.tsx` with 14 coupled partners and average degree 47.4%, followed closely by `HasSystemsCard.tsx` with 13 and average degree 44.8%. Both are catalog UI components that evolve together with other relationship cards (`HasResourcesCard`, `HasComponentsCard`, etc.), likely because they share a common data-fetching pattern that is refactored as a group.
+The first file is `HasSubcomponentsCard/HasSubcomponentsCard.tsx` with 14 coupled partners and an average degree of 47.4% the highest coupling count in the list. This catalog UI component evolves together with several other relationship cards (`HasSystemsCard`, `HasResourcesCard`, etc.).
 
-The second group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
+The second group of files is the `plugins/scaffolder-backend-module-github/src/actions/` group: `github.ts`, `githubRepoCreate.ts`, `githubAutolinks.ts`, `githubIssuesLabel.ts`, `githubDeployKey.ts`, `githubBranchProtection.ts`, and `githubWebhook.ts` all appear in the top 15, with 11–12 coupled partners each and average degrees between 42% and 60%. These files implement individual GitHub actions for the Backstage scaffolder and follow a shared interface. When one action is added or modified, the others are typically updated at the same time to maintain consistency.
 
-The last group of files is the `plugins/scaffolder-backend-module-github/src/actions/` group: `github.ts`, `githubRepoCreate.ts`, `githubAutolinks.ts`, `githubIssuesLabel.ts`, `githubDeployKey.ts`, `githubBranchProtection.ts`, and `githubWebhook.ts` all appear in the top 15, with 11–12 coupled partners each and average degrees between 42% and 60%. These files implement individual GitHub actions for the Backstage scaffolder and follow a shared interface. When one action is added or modified, the others are typically updated at the same time to maintain consistency.
+The last group is `packages/cli/src/modules/`: `info/index.ts`, `translations/index.ts`, `migrate/index.ts`, and `config/index.ts` all have 11–12 couplings, with `migrate/index.ts` reaching an average degree of 65.4%. CLI sub-modules are wired together through a central initializer (`CliInitializer.ts`, also in the top 15), so changes to the CLI architecture tend to propagate across all modules simultaneously.
+
+The following bar chart shows how many files having only one partner there are in each package.
 
 ![](./Software_Deisgn_img/least15_knowledge.png)
 
