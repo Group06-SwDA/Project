@@ -1,36 +1,36 @@
 @startuml
 !include <c4/C4_Container.puml>
 LAYOUT_WITH_LEGEND()
-title Container Diagram for Backstage
+title [Level 2 - Container Diagram] Backstage
 
-Person(developer, "Developer", "Builds and owns services.")
-Person(platform_eng, "Platform Engineer", "Configures and extends the portal.")
-Person(eng_manager, "Engineering Manager", "Monitors teams and services.")
+Person(developer, "Developer", "Uses catalog, docs, and templates.")
+Person(platform_eng, "Platform Engineer", "Configures plugins and integrations.")
+Person(eng_manager, "Engineering Manager", "Reviews ownership and health.")
 
-System_Ext(source_control, "Source Control", "GitHub / GitLab.")
-System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions.")
-System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP.")
-System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth.")
-System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores generated TechDocs HTML assets. Treated as external third-party infrastructure, not deployed as part of Backstage.")
+System_Ext(source_control, "Source Control", "Hosts code and catalog descriptors.")
+System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Runs services and workloads.")
+System_Ext(idp, "Identity Provider", "Authenticates users and groups.")
+System_Ext(object_storage, "Object Storage", "Stores generated TechDocs assets.")
 
 System_Boundary(backstage_boundary, "Backstage System") {
-    Container(frontend, "Frontend SPA", "React, TypeScript", "Single-page application running in the browser. Hosts frontend plugins: Catalog UI, Scaffolder UI, TechDocs reader, Kubernetes dashboard, and Search.")
-    Container(app_backend, "App Backend", "Node.js, TypeScript", "Node.js runtime that wires backend plugins together via a dependency injection container. In the default deployment, backend plugins run within a single process; each plugin is architecturally isolated and communicates with other plugins through HTTP APIs rather than shared code.")
-    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Persistent store for Backstage data. Database access is scoped per plugin, commonly through separate plugin databases or isolated tables and migrations.")
-    ContainerDb(cache, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional distributed cache used by backend plugins. Each plugin has its own logically isolated namespace.")
+    Container(frontend, "Frontend SPA", "React, TypeScript", "Browser UI that composes frontend plugins.")
+    Container(app_backend, "App Backend", "Node.js, TypeScript", "Hosts backend plugins and shared services.")
+    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Plugin-scoped durable storage.")
+    ContainerDb(cache, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional plugin-scoped cache.")
 }
 
 Rel(developer, frontend, "Uses portal", "HTTPS")
 Rel(platform_eng, frontend, "Manages plugins and configuration", "HTTPS")
 Rel(eng_manager, frontend, "Views service and team health", "HTTPS")
 
-Rel(frontend, app_backend, "API calls to backend plugins", "JSON / HTTPS")
-Rel(app_backend, db, "Reads and writes via Knex query builder", "SQL / TCP")
-Rel(app_backend, cache, "Caches frequent lookups via Keyv", "Cache protocol / TCP")
+Rel(frontend, app_backend, "Calls plugin APIs", "JSON / HTTPS")
+Rel(app_backend, db, "Stores plugin data", "SQL / TCP")
+Rel(app_backend, cache, "Caches plugin data", "Keyv / TCP")
 
-Rel(app_backend, idp, "Authenticates users, resolves groups", "OAuth2 / HTTPS")
-Rel(app_backend, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
-Rel(app_backend, cicd, "Fetches pipeline status", "REST API / HTTPS")
+Rel(app_backend, idp, "Authenticates users", "OAuth2 / HTTPS")
+Rel(app_backend, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
+Rel(app_backend, cicd, "Reads pipeline status", "REST API / HTTPS")
 Rel(app_backend, cloud_infra, "Queries cluster state", "REST API / HTTPS")
-Rel(app_backend, object_storage, "Reads/writes TechDocs HTML assets\nwhen external storage is configured", "REST API / HTTPS")
+Rel(app_backend, object_storage, "Reads/writes TechDocs assets", "REST API / HTTPS")
 @enduml

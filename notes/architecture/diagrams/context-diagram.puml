@@ -1,27 +1,27 @@
 @startuml
 !include <c4/C4_Context.puml>
 LAYOUT_WITH_LEGEND()
-title System Context Diagram for Backstage
+title [Level 1 - System Context Diagram] Backstage
 
-Person(developer, "Developer", "Builds and owns services. Browses the catalog, scaffolds new projects, reads TechDocs.")
-Person(platform_eng, "Platform Engineer", "Configures, extends, and maintains the Backstage instance.")
-Person(eng_manager, "Engineering Manager", "Monitors service ownership, team structure, and system health.")
+Person(developer, "Developer", "Owns services and reads docs.")
+Person(platform_eng, "Platform Engineer", "Configures plugins and integrations.")
+Person(eng_manager, "Engineering Manager", "Tracks ownership and service health.")
 
-System(backstage, "Backstage", "Open developer portal framework providing a unified interface for software catalog, documentation, and project scaffolding.")
+System(backstage, "Backstage", "Developer portal for catalog, docs, and templates.")
 
-System_Ext(source_control, "Source Control", "GitHub / GitLab / Bitbucket. Hosts source code and catalog-info.yaml descriptor files.")
-System_Ext(cicd, "CI/CD System", "CircleCI / GitHub Actions / Jenkins. Executes build and deployment pipelines.")
-System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP. Runs the actual services and workloads.")
-System_Ext(idp, "Identity Provider", "Okta / Auth0 / Google / Azure / GitHub. Manages user authentication and group resolution.")
-System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob. Stores generated TechDocs HTML assets when external storage is configured.")
+System_Ext(source_control, "Source Control", "Hosts code and catalog descriptors.")
+System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Runs services and workloads.")
+System_Ext(idp, "Identity Provider", "Authenticates users and groups.")
+System_Ext(object_storage, "Object Storage", "Stores generated TechDocs assets.")
 
-Rel(developer, backstage, "Browses catalog, scaffolds projects, reads docs", "HTTPS")
-Rel(platform_eng, backstage, "Installs plugins and configures system", "HTTPS / CLI")
-Rel(eng_manager, backstage, "Monitors teams and services", "HTTPS")
+Rel(developer, backstage, "Uses portal features", "HTTPS")
+Rel(platform_eng, backstage, "Configures the portal", "HTTPS / CLI")
+Rel(eng_manager, backstage, "Reviews ownership and health", "HTTPS")
 
-Rel(backstage, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
-Rel(backstage, cicd, "Fetches build and pipeline status", "REST API / HTTPS")
+Rel(backstage, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
+Rel(backstage, cicd, "Reads pipeline status", "REST API / HTTPS")
 Rel(backstage, cloud_infra, "Queries cluster state", "REST API / HTTPS")
-Rel(backstage, idp, "Authenticates users and resolves groups", "OAuth2 / HTTPS")
-Rel(backstage, object_storage, "Reads/writes TechDocs HTML assets\nwhen external storage is configured", "REST API / HTTPS")
+Rel(backstage, idp, "Authenticates users", "OAuth2 / HTTPS")
+Rel(backstage, object_storage, "Reads/writes TechDocs assets", "REST API / HTTPS")
 @enduml

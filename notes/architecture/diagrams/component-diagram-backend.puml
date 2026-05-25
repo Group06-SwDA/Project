@@ -3,71 +3,73 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Component Diagram for Backstage - App Backend
+title [Level 3 - Component Diagram] App Backend
 
 Container_Boundary(backend, "App Backend [Node.js, TypeScript]") {
 
-    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Composition root. Wires all\nplugins together by resolving\ntyped service references\n(logger, config, database,\ncache) at startup.")
+    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Composition root.\nWires plugins and\nshared services.")
 
-    Component(catalogPlugin, "Catalog Plugin", "TypeScript\n@backstage/plugin-catalog-backend", "Ingests catalog-info.yaml\ndescriptors, processes and\nstitches entities, stores them\nin PostgreSQL, and serves the\nCatalog REST API.")
+    Component(catalogPlugin, "Catalog Plugin", "TypeScript\n@backstage/plugin-catalog-backend", "Ingests catalog descriptors.\nServes Catalog API.")
 
-    Component(scaffolderPlugin, "Scaffolder Plugin", "TypeScript\n@backstage/plugin-scaffolder-backend", "Executes Software Template\nworkflows. Manages a task\nqueue, runs fetch/transform/\npublish actions, and persists\ntask state and logs.")
+    Component(scaffolderPlugin, "Scaffolder Plugin", "TypeScript\n@backstage/plugin-scaffolder-backend", "Runs template tasks.\nPersists task logs.")
 
-    Component(authPlugin, "Auth Plugin", "TypeScript\n@backstage/plugin-auth-backend", "Handles OAuth sign-in flows,\nmaps external identities to\ncatalog Users via\nSignInResolver, and issues\nBackstage tokens.")
+    Component(authPlugin, "Auth Plugin", "TypeScript\n@backstage/plugin-auth-backend", "Handles sign-in.\nIssues Backstage tokens.")
 
-    Component(techdocsPlugin, "TechDocs Plugin", "TypeScript\n@backstage/plugin-techdocs-backend", "Generates docs locally when\nconfigured to do so, or serves\npre-built HTML assets from\nobject storage in external\nbuilder mode.")
+    Component(techdocsPlugin, "TechDocs Plugin", "TypeScript\n@backstage/plugin-techdocs-backend", "Generates or serves\nTechDocs assets.")
 
-    Component(searchPlugin, "Search Plugin", "TypeScript\n@backstage/plugin-search-backend", "Schedules index runs via\ncollators, stores the index,\nand serves full-text search\nqueries to the frontend.")
+    Component(searchPlugin, "Search Plugin", "TypeScript\n@backstage/plugin-search-backend", "Indexes catalog and docs.\nServes search API.")
 
-    Component(permissionPlugin, "Permission Plugin", "TypeScript\n@backstage/plugin-permission-backend", "Evaluates resource-level\naccess-control policies\ndefined by platform engineers\nand enforced by all other\nplugins.")
+    Component(permissionPlugin, "Permission Plugin", "TypeScript\n@backstage/plugin-permission-backend", "Evaluates access policies.")
 
-    Component(cicdIntegration, "CI/CD Integration Plugin\n/ Proxy", "Optional TypeScript\nbackend plugin", "Represents provider-specific\nCI/CD plugins or proxy routes.\nUses entity annotations to\nlocate pipeline data and fetch\nbuild status from CI/CD tools.")
+    Component(cicdIntegration, "CI/CD Integration Plugin\n/ Proxy", "Optional TypeScript\nbackend plugin", "Fetches build and\npipeline status.")
+
+    Component(kubernetesPlugin, "Kubernetes Plugin", "TypeScript\n@backstage/plugin-kubernetes-backend", "Reads cluster resources\nfor catalog entities.")
 }
 
-ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Durable data store.\nDatabase access is scoped\nper plugin with isolated\nmigrations.")
+ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Plugin-scoped durable store.")
 
-Container(redis, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional distributed cache.\nEach plugin uses its own\nnamespaced partition.")
+Container(redis, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional namespaced cache.")
 
-Container(frontend, "Frontend SPA", "React, TypeScript", "Browser portal. Calls\nplugin REST APIs.")
+Container(frontend, "Frontend SPA", "React, TypeScript", "Calls plugin APIs.")
 
-System_Ext(sourceControl, "Source Control", "GitHub / GitLab")
-System_Ext(cicd, "CI/CD System", "Jenkins / GitHub Actions")
-System_Ext(objectStorage, "Object Storage", "AWS S3 / GCS / Azure Blob")
 System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth")
+System_Ext(objectStorage, "Object Storage", "Stores TechDocs HTML assets.")
+System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
+System_Ext(cloudInfra, "Cloud Infrastructure", "Kubernetes / AWS / GCP")
+System_Ext(sourceControl, "Source Control", "Hosts code and catalog descriptors.")
 
-Rel(frontend, catalogPlugin, "GET /catalog/entities, etc.", "JSON/HTTPS")
-Rel(frontend, scaffolderPlugin, "POST /scaffolder/v2/tasks, etc.", "JSON/HTTPS")
-Rel(frontend, authPlugin, "GET /auth/<provider>/start, etc.", "OAuth2/HTTPS")
-Rel(frontend, techdocsPlugin, "GET /techdocs/static/...", "JSON/HTTPS")
-Rel(frontend, searchPlugin, "GET /search/query", "JSON/HTTPS")
-Rel(frontend, permissionPlugin, "POST /permission/batch", "JSON/HTTPS")
-Rel(frontend, cicdIntegration, "Requests build and\npipeline status for an entity", "JSON/HTTPS")
+' Keep external systems next to each other
+Lay_R(idp, objectStorage)
+Lay_R(objectStorage, cicd)
+Lay_R(cicd, cloudInfra)
+Lay_R(cloudInfra, sourceControl)
 
-Rel(catalogPlugin, backendSystem, "Resolves: DatabaseService,\nLoggerService, CacheService,\nConfigService", "In-process DI")
-Rel(scaffolderPlugin, backendSystem, "Resolves: DatabaseService,\nLoggerService, ConfigService", "In-process DI")
-Rel(authPlugin, backendSystem, "Resolves: LoggerService,\nConfigService, TokenManager", "In-process DI")
-Rel(techdocsPlugin, backendSystem, "Resolves: LoggerService,\nConfigService", "In-process DI")
-Rel(searchPlugin, backendSystem, "Resolves: DatabaseService,\nLoggerService, CacheService", "In-process DI")
-Rel(permissionPlugin, backendSystem, "Resolves: LoggerService,\nConfigService", "In-process DI")
-Rel(cicdIntegration, backendSystem, "Resolves: ConfigService,\nLoggerService, DiscoveryService", "In-process DI")
+Rel(frontend, catalogPlugin, "Reads catalog data", "JSON/HTTPS")
+Rel(frontend, scaffolderPlugin, "Starts template tasks", "JSON/HTTPS")
+Rel(frontend, authPlugin, "Starts sign-in flow", "OAuth2/HTTPS")
+Rel(frontend, techdocsPlugin, "Reads docs assets", "JSON/HTTPS")
+Rel(frontend, searchPlugin, "Runs search queries", "JSON/HTTPS")
+Rel(frontend, permissionPlugin, "Checks permissions", "JSON/HTTPS")
+Rel(frontend, cicdIntegration, "Reads pipeline status", "JSON/HTTPS")
+Rel(frontend, kubernetesPlugin, "Reads cluster views", "JSON/HTTPS")
 
-Rel(searchPlugin, catalogPlugin, "Fetches entity documents\nfor indexing via CatalogApi", "In-process HTTP / CatalogClient")
-Rel(scaffolderPlugin, catalogPlugin, "Reads Template entities\nvia CatalogApi", "In-process HTTP / CatalogClient")
-Rel(permissionPlugin, catalogPlugin, "Resolves entity ownership\nfor policy evaluation", "In-process HTTP / CatalogClient")
-Rel(scaffolderPlugin, permissionPlugin, "Checks if task execution\nis permitted", "In-process HTTP")
+Rel(searchPlugin, catalogPlugin, "Indexes entities", "CatalogApi")
+Rel(scaffolderPlugin, catalogPlugin, "Reads templates", "CatalogApi")
+Rel(permissionPlugin, catalogPlugin, "Resolves ownership", "CatalogApi")
+Rel(scaffolderPlugin, permissionPlugin, "Checks task permission", "HTTP")
 
-Rel(catalogPlugin, postgres, "Reads/writes entity records,\nrelations, refresh state", "SQL/TCP via Knex")
-Rel(scaffolderPlugin, postgres, "Persists task state and logs", "SQL/TCP via Knex")
-Rel(authPlugin, postgres, "May persist auth-related state\ndepending on configuration", "SQL/TCP via Knex")
-Rel(searchPlugin, postgres, "Persists search index only\nwhen using Postgres search engine", "SQL/TCP via Knex")
+Rel(catalogPlugin, postgres, "Stores entities", "SQL/TCP")
+Rel(scaffolderPlugin, postgres, "Stores task state", "SQL/TCP")
+Rel(searchPlugin, postgres, "Stores index, optional", "SQL/TCP")
 
-Rel(catalogPlugin, redis, "Caches entity lookups\n(plugin-namespaced)", "Keyv/TCP")
-Rel(searchPlugin, redis, "Caches frequent queries\n(plugin-namespaced)", "Keyv/TCP")
+Rel(catalogPlugin, redis, "Caches entity lookups", "Keyv/TCP")
+Rel(searchPlugin, redis, "Caches search queries", "Keyv/TCP")
 
-Rel(catalogPlugin, sourceControl, "Reads catalog-info.yaml files\n(Discovery Providers)", "REST API/HTTPS")
-Rel(scaffolderPlugin, sourceControl, "Creates, pushes repos\n(Scaffolder Actions)", "REST API/HTTPS")
-Rel(cicdIntegration, cicd, "Fetches build and\npipeline status", "REST API/HTTPS")
-Rel(techdocsPlugin, objectStorage, "Reads/writes generated\nHTML TechDocs assets", "REST API/HTTPS")
-Rel(authPlugin, idp, "Authenticates users,\nresolves group membership", "OAuth2/HTTPS")
+Rel(catalogPlugin, sourceControl, "Reads catalog files", "REST API/HTTPS")
+Rel(scaffolderPlugin, sourceControl, "Creates repositories", "REST API/HTTPS")
+Rel(cicdIntegration, cicd, "Fetches pipeline status", "REST API/HTTPS")
+Rel(kubernetesPlugin, cloudInfra, "Queries cluster state", "REST API/HTTPS")
+Rel(techdocsPlugin, objectStorage, "Reads/writes docs assets", "REST API/HTTPS")
+Rel(authPlugin, idp, "Authenticates users", "OAuth2/HTTPS")
 
 @enduml
