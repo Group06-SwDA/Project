@@ -7,7 +7,7 @@
 Into this file I found the actual project structure.
 The project follows a monorepo setup ( is a version control strategy where code for multiple distinct projects, applications, or services—such as frontend, backend, and shared libraries—is hosted in a single repository). It is about code organization, not architecture.
 There's a section in which it is defined the content of the various packages that build the entire system.
-For the analysis of the architecture is important to watch the backend/ folder, that for definition in docs is said that "The backend uses plugins to construct a working backend that the frontend (app) can use." From this we can extrapulate that the system follows a Plugin architecture or a plugin architecture.
+For the analysis of the architecture is important to watch the backend/ folder, that for definition in docs is said that "The backend uses plugins to construct a working backend that the frontend (app) can use." From this we can extrapulate that the system follows a Plugin architecture or a microkernel architecture.
 Before doing a code inspection I've started reading in ./docs/architecture-decisions/ the records about architectural decisions:
 There are 14 actually different records, mostly they are about coding conventions, not structural decisions.
 The ADRs relevant to our report are:
@@ -103,9 +103,14 @@ That is, it is composed of between one and three parts in this specific order, w
 When that format is insufficient or when machine made interchange formats wish to express such relations in a more expressive form, a nested structure on the following form can be used:
 
 kind: <kind>
+
 namespace: <namespace>
+
 name: <name>
-Important finding: Backstage ADRs are mostly **coding conventions**, not structural decisions. Map them honestly to report sections:
+
+Important finding: Backstage ADRs are mostly **coding conventions**, not structural decisions. 
+
+Map them honestly to report sections:
 
 ---
 
@@ -127,4 +132,3 @@ Most architectural decisions live *outside* ADR folder.
 **Bottom line:** ADR005 + ADR009 + ADR011 are the three most architectural ADRs. Rest are style decisions useful only for SOLID section (OCP, ISP, SRP evidence).
 
 # .docs/overview/architecture-overview.md
-

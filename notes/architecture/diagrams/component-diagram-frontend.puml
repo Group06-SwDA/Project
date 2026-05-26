@@ -1,0 +1,64 @@
+@startuml component-diagram-frontend
+!include <c4/C4_Component.puml>
+
+LAYOUT_WITH_LEGEND()
+
+title [Level 3 - Component Diagram] Frontend SPA
+
+Person(user, "Portal User", "Developer, Platform Engineer, or Manager.")
+
+Container_Boundary(frontend, "Frontend SPA [React, TypeScript]") {
+
+    Component(appShell, "App Shell", "React\n@backstage/app-defaults\n@backstage/core-app-api", "Composes routes, layout,\nand installed plugins.")
+
+    Component(apiRegistry, "ApiRegistry\n/ Utility APIs", "TypeScript\n@backstage/core-plugin-api\nApiProvider", "Provides plugin API\nimplementations.")
+
+    Component(identityAuth, "Auth / Identity UI", "React\n@backstage/plugin-auth-react", "Handles sign-in and\nIdentityApi.")
+
+    Component(catalogUI, "Catalog UI Plugin", "React\n@backstage/plugin-catalog", "Filterable entity table\nand card-based entity\ndetail view.")
+
+    Component(scaffolderUI, "Scaffolder UI Plugin", "React\n@backstage/plugin-scaffolder", "Multi-step template wizard.\nStreams live task logs.")
+
+    Component(techdocsUI, "TechDocs UI Plugin", "React\n@backstage/plugin-techdocs", "Renders MkDocs HTML assets.\nFetches via TechDocsStorageApi.")
+
+    Component(kubernetesUI, "Kubernetes UI Plugin", "React\n@backstage/plugin-kubernetes", "Shows cluster resources\nfor catalog entities.")
+
+    Component(searchUI, "Search UI Plugin", "React\n@backstage/plugin-search", "Global search modal\nand result cards.")
+
+    Component(permissionUI, "Permission Framework\n(frontend)", "TypeScript\n@backstage/plugin-permission-react", "RequirePermission HOC for\nconditional UI rendering.\nNot a security boundary.")
+
+    Component(coreComponents, "Core Component Library", "React\n@backstage/core-components", "Shared UI primitives\n(Table, InfoCard, Header, etc.).\nNo business logic.")
+}
+
+Container(backend, "App Backend", "Node.js, TypeScript", "Exposes backend plugin APIs.")
+System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth")
+
+Rel(user, appShell, "Loads and uses the portal", "HTTPS")
+
+Rel(appShell, apiRegistry, "Creates ApiProvider;\nregisters all API implementations", "In-process / React context")
+Rel(appShell, identityAuth, "Mounts SignInPage;\nregisters IdentityApi", "React render tree")
+Rel(appShell, catalogUI, "Mounts /catalog routes", "React Router")
+Rel(appShell, scaffolderUI, "Mounts /create routes", "React Router")
+Rel(appShell, techdocsUI, "Mounts /docs routes", "React Router")
+Rel(appShell, kubernetesUI, "Mounts Kubernetes views", "React Router")
+Rel(appShell, searchUI, "Mounts /search routes", "React Router")
+Rel(appShell, permissionUI, "Registers PermissionApi", "In-process / React context")
+Rel(appShell, coreComponents, "Uses layout and UI primitives", "React component imports")
+
+Rel(catalogUI, apiRegistry, "useApi(catalogApiRef)", "React hook")
+Rel(scaffolderUI, apiRegistry, "useApi(scaffolderApiRef)", "React hook")
+Rel(techdocsUI, apiRegistry, "useApi(techdocsStorageApiRef)", "React hook")
+Rel(kubernetesUI, apiRegistry, "useApi(kubernetesApiRef)", "React hook")
+Rel(searchUI, apiRegistry, "useApi(searchApiRef)", "React hook")
+Rel(permissionUI, apiRegistry, "useApi(permissionApiRef)", "React hook")
+
+
+Rel(catalogUI, techdocsUI, "EntityTechdocsContent card\nembeds TechDocs reader", "React component composition")
+Rel(catalogUI, kubernetesUI, "Embeds entity cluster view", "React component composition")
+Rel(catalogUI, permissionUI, "Gates edit/delete actions", "React hook")
+Rel(scaffolderUI, permissionUI, "Gates template execution", "React hook")
+
+Rel(apiRegistry, backend, "Most plugin API clients\nforward requests to backend", "JSON/HTTPS")
+Rel(identityAuth, idp, "Initiates OAuth redirect flow", "OAuth2/HTTPS")
+
+@enduml

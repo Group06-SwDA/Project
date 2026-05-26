@@ -1,0 +1,75 @@
+@startuml component-diagram-backend
+!include <c4/C4_Component.puml>
+
+LAYOUT_WITH_LEGEND()
+
+title [Level 3 - Component Diagram] App Backend
+
+Container_Boundary(backend, "App Backend [Node.js, TypeScript]") {
+
+    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Composition root.\nWires plugins and\nshared services.")
+
+    Component(catalogPlugin, "Catalog Plugin", "TypeScript\n@backstage/plugin-catalog-backend", "Ingests catalog descriptors.\nServes Catalog API.")
+
+    Component(scaffolderPlugin, "Scaffolder Plugin", "TypeScript\n@backstage/plugin-scaffolder-backend", "Runs template tasks.\nPersists task logs.")
+
+    Component(authPlugin, "Auth Plugin", "TypeScript\n@backstage/plugin-auth-backend", "Handles sign-in.\nIssues Backstage tokens.")
+
+    Component(techdocsPlugin, "TechDocs Plugin", "TypeScript\n@backstage/plugin-techdocs-backend", "Generates or serves\nTechDocs assets.")
+
+    Component(searchPlugin, "Search Plugin", "TypeScript\n@backstage/plugin-search-backend", "Indexes catalog and docs.\nServes search API.")
+
+    Component(permissionPlugin, "Permission Plugin", "TypeScript\n@backstage/plugin-permission-backend", "Evaluates access policies.")
+
+    Component(cicdIntegration, "CI/CD Integration Plugin\n/ Proxy", "Optional TypeScript\nbackend plugin", "Fetches build and\npipeline status.")
+
+    Component(kubernetesPlugin, "Kubernetes Plugin", "TypeScript\n@backstage/plugin-kubernetes-backend", "Reads cluster resources\nfor catalog entities.")
+}
+
+ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL", "Plugin-scoped durable store.")
+
+Container(redis, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional namespaced cache.")
+
+Container(frontend, "Frontend SPA", "React, TypeScript", "Calls plugin APIs.")
+
+System_Ext(idp, "Identity Provider", "Okta / GitHub OAuth")
+System_Ext(objectStorage, "Object Storage", "Stores TechDocs HTML assets.")
+System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
+System_Ext(cloudInfra, "Cloud Infrastructure", "Kubernetes / AWS / GCP")
+System_Ext(sourceControl, "Source Control", "Hosts code and catalog descriptors.")
+
+' Keep external systems next to each other
+Lay_R(idp, objectStorage)
+Lay_R(objectStorage, cicd)
+Lay_R(cicd, cloudInfra)
+Lay_R(cloudInfra, sourceControl)
+
+Rel(frontend, catalogPlugin, "Reads catalog data", "JSON/HTTPS")
+Rel(frontend, scaffolderPlugin, "Starts template tasks", "JSON/HTTPS")
+Rel(frontend, authPlugin, "Starts sign-in flow", "OAuth2/HTTPS")
+Rel(frontend, techdocsPlugin, "Reads docs assets", "JSON/HTTPS")
+Rel(frontend, searchPlugin, "Runs search queries", "JSON/HTTPS")
+Rel(frontend, permissionPlugin, "Checks permissions", "JSON/HTTPS")
+Rel(frontend, cicdIntegration, "Reads pipeline status", "JSON/HTTPS")
+Rel(frontend, kubernetesPlugin, "Reads cluster views", "JSON/HTTPS")
+
+Rel(searchPlugin, catalogPlugin, "Indexes entities", "CatalogApi")
+Rel(scaffolderPlugin, catalogPlugin, "Reads templates", "CatalogApi")
+Rel(permissionPlugin, catalogPlugin, "Resolves ownership", "CatalogApi")
+Rel(scaffolderPlugin, permissionPlugin, "Checks task permission", "HTTP")
+
+Rel(catalogPlugin, postgres, "Stores entities", "SQL/TCP")
+Rel(scaffolderPlugin, postgres, "Stores task state", "SQL/TCP")
+Rel(searchPlugin, postgres, "Stores index, optional", "SQL/TCP")
+
+Rel(catalogPlugin, redis, "Caches entity lookups", "Keyv/TCP")
+Rel(searchPlugin, redis, "Caches search queries", "Keyv/TCP")
+
+Rel(catalogPlugin, sourceControl, "Reads catalog files", "REST API/HTTPS")
+Rel(scaffolderPlugin, sourceControl, "Creates repositories", "REST API/HTTPS")
+Rel(cicdIntegration, cicd, "Fetches pipeline status", "REST API/HTTPS")
+Rel(kubernetesPlugin, cloudInfra, "Queries cluster state", "REST API/HTTPS")
+Rel(techdocsPlugin, objectStorage, "Reads/writes docs assets", "REST API/HTTPS")
+Rel(authPlugin, idp, "Authenticates users", "OAuth2/HTTPS")
+
+@enduml
