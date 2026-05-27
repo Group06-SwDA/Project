@@ -28,7 +28,7 @@ Rel(frontend, app_backend, "Calls plugin APIs", "JSON / HTTPS")
 Rel(app_backend, db, "Stores plugin data", "SQL / TCP")
 Rel(app_backend, cache, "Caches plugin data", "Keyv / TCP")
 
-Rel(app_backend, idp, "Authenticates users", "OAuth2 / HTTPS")
+Rel(app_backend, idp, "Delegates sign-in", "OAuth2 / HTTPS")
 Rel(app_backend, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
 Rel(app_backend, cicd, "Reads pipeline status", "REST API / HTTPS")
 Rel(app_backend, cloud_infra, "Queries cluster state", "REST API / HTTPS")

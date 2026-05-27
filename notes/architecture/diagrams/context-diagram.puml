@@ -22,6 +22,6 @@ Rel(eng_manager, backstage, "Reviews ownership and health", "HTTPS")
 Rel(backstage, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
 Rel(backstage, cicd, "Reads pipeline status", "REST API / HTTPS")
 Rel(backstage, cloud_infra, "Queries cluster state", "REST API / HTTPS")
-Rel(backstage, idp, "Authenticates users", "OAuth2 / HTTPS")
+Rel(backstage, idp, "Delegates sign-in", "OAuth2 / HTTPS")
 Rel(backstage, object_storage, "Reads/writes TechDocs assets", "REST API / HTTPS")
 @enduml

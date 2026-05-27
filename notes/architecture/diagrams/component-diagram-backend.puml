@@ -7,8 +7,7 @@ title [Level 3 - Component Diagram] App Backend
 
 Container_Boundary(backend, "App Backend [Node.js, TypeScript]") {
 
-    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Composition root.\nWires plugins and\nshared services.")
-
+    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Wires plugins and\nshared services.")
     Component(catalogPlugin, "Catalog Plugin", "TypeScript\n@backstage/plugin-catalog-backend", "Ingests catalog descriptors.\nServes Catalog API.")
 
     Component(scaffolderPlugin, "Scaffolder Plugin", "TypeScript\n@backstage/plugin-scaffolder-backend", "Runs template tasks.\nPersists task logs.")
@@ -53,10 +52,11 @@ Rel(frontend, permissionPlugin, "Checks permissions", "JSON/HTTPS")
 Rel(frontend, cicdIntegration, "Reads pipeline status", "JSON/HTTPS")
 Rel(frontend, kubernetesPlugin, "Reads cluster views", "JSON/HTTPS")
 
-Rel(searchPlugin, catalogPlugin, "Indexes entities", "CatalogApi")
-Rel(scaffolderPlugin, catalogPlugin, "Reads templates", "CatalogApi")
-Rel(permissionPlugin, catalogPlugin, "Resolves ownership", "CatalogApi")
+Rel(searchPlugin, catalogPlugin, "Indexes entities", "CatalogClient / HTTP")
+Rel(scaffolderPlugin, catalogPlugin, "Reads templates", "CatalogClient / HTTP")
+Rel(catalogPlugin, permissionPlugin, "Requests catalog decisions", "HTTP")
 Rel(scaffolderPlugin, permissionPlugin, "Checks task permission", "HTTP")
+Rel(searchPlugin, techdocsPlugin, "Indexes TechDocs content", "HTTP")
 
 Rel(catalogPlugin, postgres, "Stores entities", "SQL/TCP")
 Rel(scaffolderPlugin, postgres, "Stores task state", "SQL/TCP")
@@ -65,11 +65,11 @@ Rel(searchPlugin, postgres, "Stores index, optional", "SQL/TCP")
 Rel(catalogPlugin, redis, "Caches entity lookups", "Keyv/TCP")
 Rel(searchPlugin, redis, "Caches search queries", "Keyv/TCP")
 
-Rel(catalogPlugin, sourceControl, "Reads catalog files", "REST API/HTTPS")
-Rel(scaffolderPlugin, sourceControl, "Creates repositories", "REST API/HTTPS")
+Rel_U(catalogPlugin, sourceControl, "Reads catalog files", "REST API/HTTPS")
+Rel_U(scaffolderPlugin, sourceControl, "Creates repositories", "REST API/HTTPS")
 Rel(cicdIntegration, cicd, "Fetches pipeline status", "REST API/HTTPS")
 Rel(kubernetesPlugin, cloudInfra, "Queries cluster state", "REST API/HTTPS")
 Rel(techdocsPlugin, objectStorage, "Reads/writes docs assets", "REST API/HTTPS")
-Rel(authPlugin, idp, "Authenticates users", "OAuth2/HTTPS")
+Rel(authPlugin, idp, "Delegates auth flow", "OAuth2/HTTPS")
 
 @enduml
