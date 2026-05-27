@@ -59,6 +59,7 @@ Rel(catalogUI, permissionUI, "Gates edit/delete actions", "React hook")
 Rel(scaffolderUI, permissionUI, "Gates template execution", "React hook")
 
 Rel(apiRegistry, backend, "Most plugin API clients\nforward requests to backend", "JSON/HTTPS")
-Rel(identityAuth, idp, "Initiates OAuth redirect flow", "OAuth2/HTTPS")
+Rel(identityAuth, backend, "Starts sign-in flow", "JSON/HTTPS")
+Rel(backend, idp, "Delegates auth flow", "OAuth2/HTTPS")
 
 @enduml
