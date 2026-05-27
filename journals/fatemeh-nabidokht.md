@@ -79,3 +79,19 @@
 
 - Read the reports and analyzed the diagrams.
 - Made some refinements and adjustments to the diagrams based on the analysis.
+
+### 2026-05-22
+
+- Met with Professor Vetro for a C4 diagram feedback session.
+
+### 2026-05-23
+
+- Started working on the identified issues.
+
+### 2026-05-25
+
+- Completed the assigned issues and validated the implemented fixes.
+
+### 2026-05-27
+
+- Reviewed and verified diagrams against the Software Architecture Report, and applied necessary modifications.
