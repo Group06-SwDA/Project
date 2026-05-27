@@ -17,7 +17,7 @@ Backstage is an internal developer portal framework — one place for engineerin
 
 Three groups use the portal:
 
-- **Developers** — primary users. Register services via `catalog-info.yaml` descriptors, browse the catalog, read TechDocs, scaffold new projects.
+- **Developers** — primary users. Register services via `catalog-info.yaml` descriptors, browses catalog, scaffolds projects, reads TechDocs.
 - **Platform Engineers** — maintain the instance: configure plugins, integrations, authentication.
 - **Engineering Managers** — mostly read-only: ownership, team structure, ecosystem health.
 
@@ -47,25 +47,25 @@ Backstage depends on five external systems:
 
 ### Relationship With Clean Architecture
 
-Backstage doesn't implement Clean Architecture in strict textbook form, but its design is broadly compatible: domain logic stays away from infrastructure, dependencies flow inward toward stable abstractions, and concrete infrastructure is wired in at the outermost composition layer.
+Backstage does not implement Clean Architecture in strict textbook form. It is better understood as a plugin-based architecture that uses several Clean Architecture-compatible ideas: stable domain model packages, API boundaries between plugins, dependency injection for shared services, and replaceable infrastructure adapters.
 
 | Clean Architecture Layer | Backstage Equivalent |
 | --- | --- |
 | **Entities** | Shared domain packages such as `catalog-model`, defining entity types (`Component`, `API`, `User`, `Group`…) with no dependency on Express, PostgreSQL, Redis, or any frontend framework. |
-| **Use Cases** | Application-level backend plugin logic: Catalog ingestion, entity processing, validation, stitching, and Scaffolder task orchestration (template + parameters → fetch/transform/publish → scaffolded repo). |
+| **Use Cases** | Application-level backend plugin behavior: Catalog ingestion, entity processing, validation, stitching, Search indexing, permission decisions, and Scaffolder task orchestration. |
 | **Interface Adapters** | REST route handlers in backend plugins, the `catalog-client` package translating HTTP responses into typed domain objects, frontend API clients, and React presenter components. |
-| **Frameworks and Drivers** | The `app/` and `backend/` composition roots, Express routing, Knex database access, Keyv cache, identity providers, source-control integrations. |
+| **Frameworks and Drivers** | The `app/` and `backend/` composition roots, HTTP routing, Knex database access, Keyv cache, identity providers, source-control integrations, object storage, Kubernetes, and CI/CD systems. |
 
-Dependencies follow the Clean Architecture rule at package level. `catalog-client` is a clear Dependency Inversion case — consumers depend on the `CatalogApi` interface, not Catalog internals — and the backend resolves typed service references at the composition root. Plugins sharing one process still share logger, DB, cache, scheduler, config via the DI container, but as abstractions, so inversion still holds with a service interface (not a separate process) as the boundary. Boundary discipline — only typed domain data crossing, never raw DB rows — is enforced by package boundaries, `@internal` annotations, and code review rather than one universal compile-time rule.
+Backstage follows the Dependency Rule only partially, mainly at package and API boundaries. `catalog-client` is a clear Dependency Inversion case — consumers depend on the `CatalogApi` interface, not Catalog internals — and the backend resolves typed service references at the composition root. However, backend plugin packages can still contain use-case logic, HTTP route registration, database access, migrations, and framework wiring together. Boundary discipline is therefore enforced by package boundaries, public APIs, `@internal` annotations, service references, and code review rather than one universal compile-time rule.
 
 ### 2.1 Persistence Model
 
 DB access goes through a shared `DatabaseService` (`coreServices.database`) injected into every backend plugin. Each plugin gets its own scoped Knex instance — never a raw connection — keeping query construction, dialect handling, and pooling in one contract.
 
-Isolation is **logical, not physical**. By default all plugins share one PostgreSQL instance with separate logical scopes:
+Isolation is **logical, not physical**. Plugins can share one PostgreSQL server while Backstage gives each plugin a separate logical persistence scope:
 
-- **PostgreSQL** — schema-per-plugin (`catalog`, `scaffolder`, `auth`, …); plugin ID maps to schema name.
-- **SQLite** — separate file per plugin (dev/test only).
+- **PostgreSQL** — separate logical database per plugin by default; `pluginDivisionMode: schema` can instead use one physical database with one schema per plugin.
+- **SQLite** — in-memory or file-based dev/test database, still scoped per plugin.
 - **Overrides** — `backend.database.plugin.<id>` in `app-config.yaml` can point a plugin at a different physical DB for true tenant isolation.
 
 Migrations live next to plugin code (`migrations/` per plugin), run at startup via Knex. Pooling uses Knex pool (PgBouncer-compatible in transaction mode).
@@ -88,7 +88,7 @@ Level 3 zooms inside a container. This report expands two Level 2 containers —
 
 #### Explanation
 
-The view shows the Backend System / DI Container, six core plugins, three shared core services (Scheduler, Discovery, Auth), and one optional CI/CD integration. Default deployment shares one process but keeps separate plugin boundaries.
+The view shows the Backend System / DI Container, core backend plugins and integrations, plugin-scoped storage/cache, the frontend caller, and five external systems. Default deployment shares one process but keeps separate plugin boundaries through services and API contracts.
 
 | Component | Role |
 | --- | --- |
@@ -99,10 +99,10 @@ The view shows the Backend System / DI Container, six core plugins, three shared
 | **TechDocs Plugin** | Docs-as-code. Local setup: generates docs via MkDocs. Production: CI generates, Backstage serves static assets from object storage. |
 | **Search Plugin** | Background collators build search documents from Catalog/TechDocs; a REST endpoint queries the engine — Lunr, PostgreSQL, or Elasticsearch/OpenSearch — behind a `SearchEngine` interface. |
 | **Permission Plugin** | Evaluates access-control policies and returns allow/deny. Backend plugins must still enforce server-side; frontend checks are UX only, not a security boundary. |
-| **TaskScheduler (core service)** | DB-locked distributed cron. Provides leased tasks (`scheduler.scheduleTask({ frequency, scope: 'global' })`) used by Catalog refresh loop, Search indexing, TechDocs sync, and Auth provider token refresh. Leases prevent duplicate execution across backend replicas — the mechanism behind the stateless horizontal-scaling claim in §4. |
-| **DiscoveryService (core service)** | Resolves `pluginId → baseURL`. In monolith deployment all IDs resolve to the same host; in a split deployment, configuration points each plugin ID at its own backend. Same plugin code works in both topologies — the contract that makes the "splittable" claim concrete. |
-| **AuthService (core service)** | Issues and validates service-to-service tokens for backend-internal plugin calls (e.g. Search calling Catalog). User-on-behalf tokens forwarded separately. Required once plugins live in different processes; transparent in monolith mode. |
 | **CI/CD Integration / Proxy** | Optional. Dedicated plugins or proxy routes fetch build/deploy status (Jenkins, GitHub Actions, Buildkite…) via entity annotations — not a Catalog responsibility. |
+| **Kubernetes Plugin** | Reads cluster and workload information for catalog entities from Kubernetes or cloud infrastructure APIs. |
+
+Core services such as database, cache, scheduler, discovery, auth, and logging are represented by the Backend System / DI Container rather than drawn as separate components.
 
 **Cross-plugin communication.** Plugins depend on API contracts (e.g. `CatalogApi`), never on each other's internals — preserving boundaries and making a later split into independent deployments feasible.
 
@@ -169,7 +169,7 @@ Backstage's **driving characteristic is extensibility**; the others serve it or 
 | **Scalability** | Stateless backend (no in-memory sessions, no local disk writes) → horizontal scaling is a replica-count change, no code change. `TaskScheduler` leases via DB ensure scheduled jobs (catalog refresh, search indexing) execute exactly once across replicas. | Plugins can't scale independently in the single-process default — a CPU-heavy plugin scales with everything else. |
 | **Maintainability** | Yarn monorepo — one lockfile, one toolchain (`@backstage/cli`); cross-plugin refactors atomic | CI cost across 100+ packages |
 | **Fault isolation** | Plugin-scoped DB connections, no shared mutable state — one plugin's data fault can't corrupt another | Single process: an unhandled crash still drops all plugins |
-| **Deployability** | HTTP-only inter-plugin communication, `DiscoveryService` for URL resolution, and `AuthService` plugin tokens for service-to-service auth mean the same plugin code runs in monolith or split topology. Splitting requires only config (per-plugin discovery URLs + auth keys), not refactoring. | Split needs startup-order coordination, separate config, separate observability, and ownership clarity per plugin — the per-plugin DB scope helps but doesn't remove the operational cost. |
+| **Deployability** | API-based inter-plugin communication, DiscoveryService for URL resolution, and AuthService plugin tokens for service-to-service auth mean the same plugin code can run in monolith or split topology. Splitting requires only config (per-plugin discovery URLs + auth keys), not refactoring. | Split needs startup-order coordination, separate config, separate observability, and ownership clarity per plugin — the per-plugin DB scope helps but doesn't remove the operational cost. |
 
 **Net:** the architecture genuinely supports its driving characteristic; the recurring cost is the single-process default trading per-plugin independence for operational simplicity.
 

@@ -1,27 +1,27 @@
 @startuml
 !include <c4/C4_Context.puml>
 LAYOUT_WITH_LEGEND()
-title [Level 1 - System Context Diagram] Backstage
+title [Level 1 - System Context] Backstage
 
-Person(developer, "Developer", "Owns services and reads docs.")
-Person(platform_eng, "Platform Engineer", "Configures plugins and integrations.")
-Person(eng_manager, "Engineering Manager", "Tracks ownership and service health.")
+Person(developer, "Developer", "Browses catalog, scaffolds projects, reads TechDocs.")
+Person(platform_eng, "Platform Engineer", "Configures and extends the portal.")
+Person(eng_manager, "Engineering Manager", "Monitors service ownership and team structure.")
 
-System(backstage, "Backstage", "Developer portal for catalog, docs, and templates.")
+System(backstage, "Backstage", "Unified developer portal for software catalog, documentation, and project scaffolding.")
 
-System_Ext(source_control, "Source Control", "Hosts code and catalog descriptors.")
-System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
-System_Ext(cloud_infra, "Cloud Infrastructure", "Runs services and workloads.")
-System_Ext(idp, "Identity Provider", "Authenticates users and groups.")
-System_Ext(object_storage, "Object Storage", "Stores generated TechDocs assets.")
+System_Ext(source_control, "Source Control", "GitHub / GitLab / Bitbucket.")
+System_Ext(cicd, "CI/CD System", "CircleCI / GitHub Actions / Jenkins.")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Kubernetes / AWS / GCP.")
+System_Ext(idp, "Identity Provider", "Okta / Auth0 / Google / GitHub.")
+System_Ext(object_storage, "Object Storage", "AWS S3 / GCS / Azure Blob.")
 
-Rel(developer, backstage, "Uses portal features", "HTTPS")
-Rel(platform_eng, backstage, "Configures the portal", "HTTPS / CLI")
-Rel(eng_manager, backstage, "Reviews ownership and health", "HTTPS")
+Rel(developer, backstage, "Browses catalog, scaffolds projects, reads docs", "HTTPS")
+Rel(platform_eng, backstage, "Installs plugins and configures system", "HTTPS / CLI")
+Rel(eng_manager, backstage, "Monitors teams and services", "HTTPS")
 
-Rel(backstage, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
-Rel(backstage, cicd, "Reads pipeline status", "REST API / HTTPS")
+Rel(backstage, source_control, "Reads catalog-info.yaml, creates repositories", "REST API / HTTPS")
+Rel(backstage, cicd, "Fetches build and pipeline status", "REST API / HTTPS")
 Rel(backstage, cloud_infra, "Queries cluster state", "REST API / HTTPS")
-Rel(backstage, idp, "Delegates sign-in", "OAuth2 / HTTPS")
-Rel(backstage, object_storage, "Reads/writes TechDocs assets", "REST API / HTTPS")
+Rel(backstage, idp, "Authenticates users and resolves groups", "OAuth2 / HTTPS")
+Rel(backstage, object_storage, "Stores and reads generated TechDocs assets", "REST API / HTTPS")
 @enduml

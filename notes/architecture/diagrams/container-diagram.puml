@@ -1,9 +1,9 @@
 @startuml
 !include <c4/C4_Container.puml>
 LAYOUT_WITH_LEGEND()
-title [Level 2 - Container Diagram] Backstage
+title [Level 2 - System Container Diagram] Backstage
 
-Person(developer, "Developer", "Uses catalog, docs, and templates.")
+Person(developer, "Developer", "Browses catalog, scaffolds projects, reads TechDocs.")
 Person(platform_eng, "Platform Engineer", "Configures plugins and integrations.")
 Person(eng_manager, "Engineering Manager", "Reviews ownership and health.")
 
