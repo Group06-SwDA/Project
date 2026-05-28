@@ -1,0 +1,72 @@
+@startuml AppThemeSelector_Observer
+
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+' =================== SUBJECT SIDE ===================
+
+interface "Observable<T>" as Observable <<Subject interface>> {
+  +subscribe(observer: Observer<T>): Subscription
+  +subscribe(onNext: (value: T) => void, onError?: (error: Error) => void, onComplete?: () => void): Subscription
+}
+
+interface "ZenObservable.SubscriptionObserver<T>" as ZenSubscriptionObserver <<Subject interface Observer interface>> {
+  +next(value: T): void
+  +error(error: Error): void
+  +complete(): void
+  +closed: boolean
+}
+
+class "BehaviorSubject<T>" as BehaviorSubject <<ConcreteSubject>> {
+  -currentValue: T
+  -isClosed: boolean
+  -subscribers: Set<ZenObservable.SubscriptionObserver<T>>
+  +next(value: T): void
+  +error(error: Error): void
+  +complete(): void
+  +subscribe(observer): Subscription
+}
+
+class AppThemeSelector <<uses ConcreteSubject>> {
+  -subject: BehaviorSubject<string | undefined>
+  -activeThemeId: string | undefined
+  +setActiveThemeId(themeId?): void
+  +activeThemeId$(): Observable<string | undefined>
+  +getActiveThemeId(): string | undefined
+}
+
+' =================== OBSERVER SIDE ===================
+
+interface "Observer<T>" as ObserverInterface <<Observer interface>> {
+  +next?(value: T): void
+  +error?(error: Error): void
+  +complete?(): void
+}
+
+
+interface "Subscription" as Subscription {
+  +unsubscribe(): void
+  +closed: boolean
+}
+
+class "themeId => { localStorage... }" as LocalStorageCallback <<ConcreteObserver\nanonymous>> {
+}
+
+
+' =================== RELATIONS ===================
+
+BehaviorSubject ..|> Observable : implements
+BehaviorSubject ..|> ZenSubscriptionObserver : implements
+BehaviorSubject "1" o-- "*" ZenSubscriptionObserver : maintains subscribers
+
+Observable ..> Subscription : returns
+Observable ..> ObserverInterface : accepts
+
+AppThemeSelector "1" *-- "1" BehaviorSubject : composed of
+AppThemeSelector ..> Observable : exposes via\nactiveThemeId$()
+
+AppThemeSelector --> Observable : calls subscribe(onNext)
+AppThemeSelector --> LocalStorageCallback : instantiates\nand registers
+AppThemeSelector --> Subscription : calls unsubscribe()\nin dispose()
+
+@enduml

@@ -1,0 +1,66 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface BackstageApp <<interface>> {
+  + getProvider()
+  + createRoot()
+  + getRouter()
+}
+
+class AppManager <<facade>> {
+  - apiHolder: ApiHolder
+  - apiFactoryRegistry: ApiFactoryRegistry
+  - appThemeApi: AppThemeApi
+  - appIdentityProxy: AppIdentityProxy
+  --
+  + getProvider()
+  + createRoot()
+  + getRouter()
+  + getSystemIcon()
+  - getApiHolder()
+  - verifyPlugins()
+}
+
+class App <<client>> {
+  + createApp()
+}
+
+class createSpecializedApp {
+}
+
+class ApiFactoryRegistry <<subsystem>> {
+  + register()
+  + getAllApis()
+}
+
+class ApiResolver <<subsystem>> {
+  + validateFactories()
+  + get()
+}
+
+class AppThemeSelector <<subsystem>> {
+  + createWithStorage()
+}
+
+class AppIdentityProxy <<subsystem>> {
+  + enableCookieAuth()
+}
+
+class traverseElementTree <<subsystem>> {
+  + collectors
+  + discoverers
+}
+
+AppManager ...> BackstageApp : implements
+App--> createSpecializedApp : uses 
+createSpecializedApp --> AppManager : instantiates
+
+AppManager --> ApiFactoryRegistry : uses
+AppManager --> ApiResolver : uses
+AppManager --> AppThemeSelector : uses
+AppManager --> AppIdentityProxy : uses
+AppManager --> traverseElementTree : uses
+
+@enduml

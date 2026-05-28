@@ -1,0 +1,36 @@
+@startuml
+!include <c4/C4_Container.puml>
+LAYOUT_WITH_LEGEND()
+title [Level 2 - System Container Diagram] Backstage
+
+Person(developer, "Developer", "Browses catalog, scaffolds projects, reads TechDocs.")
+Person(platform_eng, "Platform Engineer", "Configures plugins and integrations.")
+Person(eng_manager, "Engineering Manager", "Reviews ownership and health.")
+
+System_Ext(source_control, "Source Control", "Hosts code and catalog descriptors.")
+System_Ext(cicd, "CI/CD System", "Runs build and deployment pipelines.")
+System_Ext(cloud_infra, "Cloud Infrastructure", "Runs services and workloads.")
+System_Ext(idp, "Identity Provider", "Authenticates users and groups.")
+System_Ext(object_storage, "Object Storage", "Stores generated TechDocs assets.")
+
+System_Boundary(backstage_boundary, "Backstage System") {
+    Container(frontend, "Frontend SPA", "React, TypeScript", "Browser UI that composes frontend plugins.")
+    Container(app_backend, "App Backend", "Node.js, TypeScript", "Hosts backend plugins and shared services.")
+    ContainerDb(db, "PostgreSQL Database", "PostgreSQL", "Plugin-scoped durable storage.")
+    ContainerDb(cache, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional plugin-scoped cache.")
+}
+
+Rel(developer, frontend, "Uses portal", "HTTPS")
+Rel(platform_eng, frontend, "Manages plugins and configuration", "HTTPS")
+Rel(eng_manager, frontend, "Views service and team health", "HTTPS")
+
+Rel(frontend, app_backend, "Calls plugin APIs", "JSON / HTTPS")
+Rel(app_backend, db, "Stores plugin data", "SQL / TCP")
+Rel(app_backend, cache, "Caches plugin data", "Keyv / TCP")
+
+Rel(app_backend, idp, "Delegates sign-in", "OAuth2 / HTTPS")
+Rel(app_backend, source_control, "Reads catalog files, creates repos", "REST API / HTTPS")
+Rel(app_backend, cicd, "Reads pipeline status", "REST API / HTTPS")
+Rel(app_backend, cloud_infra, "Queries cluster state", "REST API / HTTPS")
+Rel(app_backend, object_storage, "Reads/writes TechDocs assets", "REST API / HTTPS")
+@enduml
