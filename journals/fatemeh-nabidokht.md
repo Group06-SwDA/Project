@@ -63,12 +63,6 @@
 
 - Completed the supporting documentation for the component-level architecture.
 
-### 2026-05-12
-
-- Generated the first iteration of the Backend Component diagram.
-
-- Completed the supporting documentation for the component-level architecture.
-
 ### 2026-05-14
 
 - Generated the Catalog and Frontend Component diagram.
