@@ -22,9 +22,4 @@
 ### 2026-04-21
 
 - Initiated work on the Level 1 Context and Level 2 Container diagrams. Still in the process of reviewing and refining the connections.
-
-### 2026-04-23
-
-- Continued working on the Level 1 Context and Level 2 Container diagrams.
-
-- Met with my teammates and shared our updates.
+- Generated the first version of architecture report(c4 part).

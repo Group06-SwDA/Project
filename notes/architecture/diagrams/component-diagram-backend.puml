@@ -1,0 +1,75 @@
+@startuml component-diagram-backend
+!include <c4/C4_Component.puml>
+
+LAYOUT_WITH_LEGEND()
+
+title [Level 3 - Component Diagram] Backstage App Backend
+
+Container(frontend, "Frontend SPA", "React, TypeScript", "Calls backend plugin APIs.")
+
+ContainerDb(postgres, "Database Service / PostgreSQL", "PostgreSQL", "Production durable store. Plugin-scoped and configuration-dependent.")
+
+Container(cacheStore, "Cache Store", "Keyv-backed:\nRedis / Memcache / Valkey / Memory", "Optional namespaced cache.")
+
+System_Ext(sourceControl, "Source Control", "GitHub / GitLab / Bitbucket")
+System_Ext(idp, "Identity Provider", "OAuth / OIDC provider")
+System_Ext(objectStorage, "Object Storage", "S3 / GCS / Azure Blob")
+System_Ext(cicd, "CI/CD System", "GitHub Actions / Jenkins / CircleCI")
+System_Ext(runtimeInfra, "Cloud Infrastructure", "Kubernetes / AWS / GCP")
+
+Container_Boundary(backend, "App Backend [Node.js, TypeScript]") {
+
+    Component(backendSystem, "Backend System\n/ DI Container", "TypeScript\n@backstage/backend-app-api", "Composition root. Wires plugins and shared services.")
+
+    Component(catalogPlugin, "Catalog Backend Plugin", "TypeScript\n@backstage/plugin-catalog-backend", "Ingests catalog descriptors. Serves Catalog API.")
+
+    Component(scaffolderPlugin, "Scaffolder Backend Plugin", "TypeScript\n@backstage/plugin-scaffolder-backend", "Runs template tasks. Persists task logs.")
+
+    Component(authPlugin, "Auth Backend Plugin", "TypeScript\n@backstage/plugin-auth-backend", "Handles sign-in. Issues Backstage tokens.")
+
+    Component(techdocsPlugin, "TechDocs Backend Plugin", "TypeScript\n@backstage/plugin-techdocs-backend", "Serves generated TechDocs assets.")
+
+    Component(searchPlugin, "Search Backend Plugin", "TypeScript\n@backstage/plugin-search-backend", "Indexes catalog and docs. Serves search API.")
+
+    Component(permissionPlugin, "Permission Backend Plugin", "TypeScript\n@backstage/plugin-permission-backend", "Evaluates access policies.")
+
+    Component(cicdIntegration, "CI/CD Integration Plugin\n/ Proxy", "Optional TypeScript\nbackend plugin", "Fetches pipeline status.")
+
+    Component(kubernetesPlugin, "Kubernetes Backend Plugin", "TypeScript\n@backstage/plugin-kubernetes-backend", "Reads cluster resources for catalog entities.")
+}
+
+Lay_R(idp, objectStorage)
+Lay_R(objectStorage, cicd)
+Lay_R(cicd, runtimeInfra)
+Lay_R(runtimeInfra, sourceControl)
+
+Rel(frontend, catalogPlugin, "Reads catalog data", "JSON/HTTPS")
+Rel(frontend, scaffolderPlugin, "Starts template tasks", "JSON/HTTPS")
+Rel(frontend, authPlugin, "Starts sign-in flow", "HTTPS + OAuth/OIDC redirect flow")
+Rel(frontend, techdocsPlugin, "Reads docs assets", "JSON/HTTPS")
+Rel(frontend, searchPlugin, "Runs search queries", "HTTPS/JSON")
+Rel(frontend, permissionPlugin, "Checks UI permissions", "JSON/HTTPS")
+Rel(frontend, cicdIntegration, "Reads pipeline status", "JSON/HTTPS")
+Rel(frontend, kubernetesPlugin, "Reads cluster views", "JSON/HTTPS")
+
+Rel(searchPlugin, catalogPlugin, "Indexes catalog entities", "Catalog API / service abstraction")
+Rel(searchPlugin, techdocsPlugin, "Indexes documentation content/metadata", "TechDocs API / service abstraction")
+Rel(scaffolderPlugin, catalogPlugin, "Reads software template entities", "Catalog API / service abstraction")
+Rel(scaffolderPlugin, permissionPlugin, "Checks task/action permissions", "Permission API / service abstraction")
+Rel(catalogPlugin, permissionPlugin, "Checks catalog access decisions", "Permission API / service abstraction")
+
+Rel(catalogPlugin, postgres, "Stores entities, relations, metadata, and processing state", "SQL / plugin-scoped")
+Rel(scaffolderPlugin, postgres, "Stores task state, execution logs, and status", "SQL / plugin-scoped")
+Rel(searchPlugin, postgres, "May persist search index depending on configured search engine", "optional / config-dependent")
+
+Rel(catalogPlugin, cacheStore, "Caches catalog lookups if configured", "Keyv")
+Rel(searchPlugin, cacheStore, "Caches search data if configured", "Keyv")
+
+Rel(catalogPlugin, sourceControl, "Reads catalog descriptor files", "REST API/HTTPS")
+Rel(scaffolderPlugin, sourceControl, "Creates repositories and pushes generated code", "REST API/HTTPS")
+Rel(authPlugin, idp, "Delegates auth flow", "OAuth/OIDC over HTTPS")
+Rel(techdocsPlugin, objectStorage, "Stores and reads generated TechDocs static files", "Object storage API")
+Rel(cicdIntegration, cicd, "Fetches pipeline status", "REST API/HTTPS")
+Rel(kubernetesPlugin, runtimeInfra, "Queries cluster and workload state", "Kubernetes API/HTTPS")
+
+@enduml
