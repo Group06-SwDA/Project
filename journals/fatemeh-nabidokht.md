@@ -22,4 +22,60 @@
 ### 2026-04-21
 
 - Initiated work on the Level 1 Context and Level 2 Container diagrams. Still in the process of reviewing and refining the connections.
-- Generated the first version of architecture report(c4 part).
+
+### 2026-04-23
+
+- Continued working on the Level 1 Context and Level 2 Container diagrams.
+- Met with my teammates and shared our updates.
+
+### 2026-04-30
+
+- Started working on the Clean Architecture section of the Backstage architecture report.
+
+### 2026-05-02
+
+- Reviewed the course material about Clean Architecture, focusing on the Dependency Rule and the separation between policies and implementation details.
+
+### 2026-05-04
+
+- Began checking how Backstage can be compared with Clean Architecture concepts.
+- Started identifying possible mappings between Clean Architecture layers and Backstage elements, such as catalog models, backend plugin logic, adapters, and infrastructure-related components.
+
+### 2026-05-07
+
+- Completed the Clean Architecture section of the report.
+
+- We had a meeting with the team to get updated on the work others had done, understand what we should do next, and share our knowledge with each other.
+
+### 2026-05-09
+
+- Extracted the real internal components of the App Backend container for the C4 Level 3 diagram.
+
+- Started drawing the C4 Level 3 Component Diagram for the App Backend container.
+
+### 2026-05-10
+
+- Continued the development and refinement of the Level 3 Component diagrams.
+
+### 2026-05-12
+
+- Generated the first iteration of the Backend Component diagram.
+
+- Completed the supporting documentation for the component-level architecture.
+
+### 2026-05-12
+
+- Generated the first iteration of the Backend Component diagram.
+
+- Completed the supporting documentation for the component-level architecture.
+
+### 2026-05-14
+
+- Generated the Catalog and Frontend Component diagram.
+
+- Completed the documentation for the Frontend and Catalog component-level architecture.
+
+### 2026-05-18
+
+- Read the reports and analyzed the diagrams.
+- Made some refinements and adjustments to the diagrams based on the analysis.

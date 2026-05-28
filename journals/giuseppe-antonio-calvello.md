@@ -26,3 +26,35 @@
     - Divided the team roles for the project inspection.
     - Assigned to the architecture analisis.
 - Analysis of the architectural pattern declared in the documantation, specifically the  plugin architecture part.
+
+### 2026-04-23
+
+- Read documentation in the collaborate folder to understand the structure to follow in the project
+
+### 2026-04-26
+
+- Started reading files into ./docs/architecture-decisions/
+- They're mostly coding conventions, so I've selected the ones important for the study of the architecture
+- Started writing a report about ADRs also mapping them to the associated C4 level, given the infos in the docs
+
+###  2026-04-26
+
+- Continued writing report about ADRs
+
+### 2026-04-28
+
+- Ended report about ADRs
+
+### 2026-05-07
+
+- Meeting with the group to share the knowledge about what is been done.
+
+### 2026-05-13
+
+- done a review for C4 diagrams.
+- Added evidence trail for the study of SOLID and where violation have been found.
+
+### 2026-05-20
+
+- Started the redaction of architecture's report.
+- Added to the report the SOLID violations found

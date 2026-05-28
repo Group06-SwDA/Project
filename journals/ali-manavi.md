@@ -19,3 +19,24 @@
 * Team meeting: Finalized task assignments and conducted an initial review of the project structure.
 * Shared individual research notes and preliminary findings with the team to align our analysis strategy.
 * Started exploring the codebase to understand the high-level organization of Backstage packages.
+### 2026-04-27
+- Started researching Backstage runtime dependencies and how packages are structured in the monorepo.
+
+### 2026-04-28
+- Investigated the difference between runtime and dev dependencies in Backstage package.json files.
+- Wrote an automated extraction script to collect runtime dependencies from all Backstage packages.
+
+### 2026-04-29
+- Ran the script on the Backstage repository and finalized runtime-deps.json with 228 packages.
+- Created runtime-deps.md summary document and added extract-runtime.js script to the repository.
+### 2026-04-30
+- Created ali-manavi-notes.md explaining the methodology and findings of the runtime dependency analysis.
+- Opened a Pull Request to merge ali_manavi branch into main.
+
+### 2026-05-07
+-  meeting with the team to review progress and discuss next steps.
+- Exchanged knowledge with team members about dependency analysis findings.
+
+### 2026-05-11
+- Started reviewing other team members' work to better understand the overall architecture of the project.
+- Became more involved in understanding how runtime dependencies relate to the broader system design.

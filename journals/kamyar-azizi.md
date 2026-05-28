@@ -59,3 +59,39 @@ npx madge packages/app/src --json > module-dependencies.json
 
 - Exported the resulting module dependency graph into a structured JSON file (module-dependencies.json) for further analysis and documentation purposes.
 - Pushed existing files to my personal branch and merged the branch into main.
+
+### 2026-04-23
+
+- Had a short team meeting to check everyone’s progress and what they were working on.
+
+### 2026-04-25
+
+- Developed a script named `extract-structural` to extract structural dependencies from the codebase.
+- Generated `structural-deps.json`, containing the extracted structural dependency data.
+
+### 2026-04-26
+
+- Developed a script to transform the structural dependency JSON into a format compatible with Mermaid diagrams.
+
+### 2026-04-27
+
+- Identified that the full structural dependency graph was too large and complex (~500 relationships) to be used directly for visualization.
+- Developed a second script to summarize and abstract the structural dependencies into higher-level architectural groups.
+
+### 2026-04-29
+
+- Created UML diagrams for package dependencies using PlantUML.
+- Used Mermaid for structural dependency diagrams due to better readability for larger graphs.
+
+### 2026-04-30
+
+- Finalized diagrams and supporting files for inclusion in project documentation.
+- Created a Design Notes document (`kamyar-azizi-note.md`) containing the work I have done on dependency analysis, including package, module, and structural dependencies, along with explanations for other team members.
+
+### 2026-05-07
+
+- Held a meeting with the team to review the progress made by others, discuss the next steps, and exchange knowledge across the team.
+
+### 2026-05-11
+
+- Started reviewing other team members’ work and became more involved in understanding the architecture side of the project.

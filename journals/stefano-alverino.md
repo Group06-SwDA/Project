@@ -29,3 +29,66 @@
 - Meeting to review document notes taken by the entire team and to divide subtasks
 - Began organizing the design working group
 - Researched tools for commit scraping to analyze knowledge dependencies
+
+### 2026-04-19
+
+- Researched the best approach to extract data from git history
+- Designed the overall analysis pipeline
+- Implemented commit extraction and generated the raw dataset
+
+### 2026-04-20
+
+- Designed the data filtering strategy
+- Implemented filters to remove noise (merge commits, bots, non-code files)
+
+### 2026-04-21
+
+- Designed and implemented co-change analysis between files
+
+### 2026-04-22
+
+- Designed and built the knowledge dependency graph
+- Applied Louvain clustering (chosen for scalability and ability to detect communities in large graphs)
+- Generated the final diagram
+- Started validating the correctness of the extracted data (ongoing)
+
+### 2026-04-27
+- Completed data validation
+
+### 2026-04-28
+- Meeting with Giulia to initiate design patterns analysis
+- Started design patterns research
+- Identified instances of the Facade and Strategy patterns
+
+### 2026-04-29
+- Continued design patterns research
+- Identified instances of the Observer pattern and Fluent Builder pattern
+- Designed a workflow diagram illustrating the knowledge dependency analysis pipeline
+
+### 2026-05-04
+
+- Wrote explanations of design patterns
+- Created UML class diagrams to illustrate and explain the patterns
+
+### 2026-05-05
+
+- Analyzed code dependencies with madge with Giulia
+- Produced some graphs about code dependencies with Giulia
+- Reviewed knowledge dependencies with Giulia
+
+### 2026-05-09
+
+- Produced knowledge dependecies graphs
+
+### 2026-05-10
+
+- Produced knowledge-code dependencies comparisions
+
+### 2026-05-15
+
+- Reviewed Observer design pattern
+
+### 2026-05-20
+
+- Reviewing design report
+- Reviewed some errors in knowledge dependencies
