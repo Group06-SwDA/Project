@@ -89,7 +89,7 @@ Both front-end and back-end do not have any direct functionality except the one 
 
 ### Frontend
 
-![](./Overview_img/frontend.svg)`<br>`
+![](./Overview_img/frontend.svg)
 
 > The schema shows how blocks interact with eachother.
 
@@ -99,7 +99,7 @@ Only the App knows Plugins URLs and resolves routes so that plugins do not have 
 
 ### Backend
 
-![](./Overview_img/backend.svg)`<br>`
+![](./Overview_img/backend.svg) 
 
 > The diagram shows how blocks interact with eachother.
 
