@@ -9,7 +9,7 @@
 
 ### Diagram
 
-![Context Diagram](../out/notes/architecture/diagrams/context-diagram/context-diagram.png)
+![Context Diagram](./out/notes/architecture/diagrams/context-diagram/context-diagram.png)
 
 ### Explanation
 
@@ -35,7 +35,7 @@ Backstage depends on five external systems:
 
 ### Diagram
 
-![Container Diagram](../out/notes/architecture/diagrams/container-diagram/container-diagram.png)
+![Container Diagram](./out/notes/architecture/diagrams/container-diagram/container-diagram.png)
 
 ### Explanation
 
@@ -84,7 +84,7 @@ Level 3 zooms inside a container. This report expands two Level 2 containers —
 
 #### Diagram
 
-![App Backend Component Diagram](../out/notes/architecture/diagrams/component-diagram-backend/component-diagram-backend.svg)
+![App Backend Component Diagram](./out/notes/architecture/diagrams/component-diagram-backend/component-diagram-backend.svg)
 
 #### Explanation
 
@@ -128,7 +128,7 @@ This view zooms inside the Catalog Plugin — a component view within the App Ba
 
 #### Diagram
 
-![Frontend Component Diagram](../out/notes/architecture/diagrams/component-diagram-frontend/component-diagram-frontend.svg)
+![Frontend Component Diagram](./out/notes/architecture/diagrams/component-diagram-frontend/component-diagram-frontend.svg)
 
 #### Explanation
 
