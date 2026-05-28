@@ -32,19 +32,19 @@ _Backstage_ is just a skeleton and many functionalities are implemented using pl
 There is another classification of plugins according to their architecture:
 
 - Standalone: Run entirely in the browser and do not make API requests to other services. Once the plugin is added its informations are visible in the Backstage UI.
-<br> Below an example with Tech Radar Plugin.
+  `<br>` Below an example with Tech Radar Plugin.
 
 ![](./Overview_img/standalone_plugins.jpeg)
 
 - Service Backend: they make API requests within the Backstage ecosystem, so Software Catalog is an example.
-<br>Below an example with Lighthouse Plugin.
+  `<br>` Below an example with Lighthouse Plugin.
 
 ![](./Overview_img/servicebackend_plugins.jpeg)
 
 - Third-party Backend: they make API requests outside the Backstage ecosystem.
-<br>Below an example with CircleCI Plugin.
+  `<br>` Below an example with CircleCI Plugin.
 
-![](./Overview_img/thirdpartybackend_plugins.jpeg) 
+![](./Overview_img/thirdpartybackend_plugins.jpeg)
 
 #### Software Catalog
 
@@ -61,7 +61,7 @@ Core entities are:
 - Components
 - APIs: implemented by components, they have different restriction levels.
 - Resources: are physical or virtual infrastructure that allow components to operate.
-![](./Overview_img/software_catalog_1_approx.svg)
+  ![](./Overview_img/software_catalog_1_approx.svg)
 
 #### Software Templates
 
@@ -89,8 +89,9 @@ Both front-end and back-end do not have any direct functionality except the one 
 
 ### Frontend
 
-![](./Overview_img/frontend.svg)<br>
->The schema shows how blocks interact with eachother.
+![](./Overview_img/frontend.svg)`<br>`
+
+> The schema shows how blocks interact with eachother.
 
 Extensions allow the instantiation and visualization of the app.
 Each one of them is attached to a parent which may have more than one child. The app builds an _app extension tree_ which is a single tree that keeps all extensions together. There are also extension overrides which are high priority extensions and allow to override individual extensions or install new ones. Through _Utility APIs_ it is easier to build plugins. They are implemented by extensions that are provided.
@@ -98,8 +99,9 @@ Only the App knows Plugins URLs and resolves routes so that plugins do not have 
 
 ### Backend
 
-![](./Overview_img/backend.svg)<br>
->The diagram shows how blocks interact with eachother.
+![](./Overview_img/backend.svg)`<br>`
+
+> The diagram shows how blocks interact with eachother.
 
 It is possible to implement more than one backend deployments depending on the need to isolate or scale individual features. Plugins do not communicate with eachother directly so each plugin can be considered as a microservice. Services provide a simpler plugin implementation. It is possible to override services to customize them. Like services Extension Points are a way to extend plugins but they are provided by Plugins or modules themselves.
 Modules aim to add features using extension points. Each module can use extension points belonging to only one plugin.
@@ -111,11 +113,11 @@ The code is organised using NPM packages.
 
 To count the number of project contributors it's been used:
 
-``` bash
+```bash
 git shortlog -sn | wc -l
 ```
 
->2349
+> Output: 2349
 
 ### Languages
 
@@ -131,10 +133,11 @@ tokei .
 
 Using the following command the output is just the application code without documentation, infrastructure and configuration.
 
-```bash 
+```bash
 
 tokei . -t TypeScript,TSX,CSS,Handlebars,JavaScript,Sass,JSX,Mustache,HTML
 ```
+
 ![](./Overview_img/pure_code.png)
 
 Considering Markdown, PlanText and MDX as documentation; JSON, YAML, Shell, PowerShell, HCL,PAN, Dockerfile and Makefile as configuration and infrastructure the ratios are the following:
@@ -147,4 +150,4 @@ Using the following command to find the number of packages except external depen
 find . -name "package.json" -not -path "*/node_modules/*" | wc -l
 ```
 
->253
+> Output: 253
