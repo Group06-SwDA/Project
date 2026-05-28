@@ -1,7 +1,7 @@
 
 # Project Activity Log: Backstage
 
-## Author: Stefano Alverino
+## Author: Giuseppe Antonio Calvello
 
 ### 2026-04-09
 
@@ -58,3 +58,20 @@
 
 - Started the redaction of architecture's report.
 - Added to the report the SOLID violations found
+
+### 2026-05-22
+
+- Meeting with  professor Vetrò about C4 diagrams revision.
+
+### 2026-05-23
+
+- revisioned the report about architecture for structure and small concept fix.
+
+### 2026-05-27
+
+- Added to the architecture report DB interaction
+- small diagram review
+
+### 2026-05-28
+
+- repo review and Branched Report Branches to main
