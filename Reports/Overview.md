@@ -32,19 +32,19 @@ _Backstage_ is just a skeleton and many functionalities are implemented using pl
 There is another classification of plugins according to their architecture:
 
 - Standalone: Run entirely in the browser and do not make API requests to other services. Once the plugin is added its informations are visible in the Backstage UI.
-  `<br>` Below an example with Tech Radar Plugin.
+</br> Below an example with Tech Radar Plugin.
 
-![](./Overview_img/standalone_plugins.jpeg)
+![img](./Overview_img/standalone_plugins.jpeg)
 
 - Service Backend: they make API requests within the Backstage ecosystem, so Software Catalog is an example.
-  `<br>` Below an example with Lighthouse Plugin.
+</br> Below an example with Lighthouse Plugin.
 
-![](./Overview_img/servicebackend_plugins.jpeg)
+![img](./Overview_img/servicebackend_plugins.jpeg)
 
 - Third-party Backend: they make API requests outside the Backstage ecosystem.
-  `<br>` Below an example with CircleCI Plugin.
+</br> Below an example with CircleCI Plugin.
 
-![](./Overview_img/thirdpartybackend_plugins.jpeg)
+![img](./Overview_img/thirdpartybackend_plugins.jpeg)
 
 #### Software Catalog
 
@@ -61,7 +61,7 @@ Core entities are:
 - Components
 - APIs: implemented by components, they have different restriction levels.
 - Resources: are physical or virtual infrastructure that allow components to operate.
-  ![](./Overview_img/software_catalog_1_approx.svg)
+![img](./Overview_img/software_catalog_1_approx.svg)
 
 #### Software Templates
 
@@ -89,7 +89,7 @@ Both front-end and back-end do not have any direct functionality except the one 
 
 ### Frontend
 
-![](./Overview_img/frontend.svg)
+![img](./Overview_img/frontend.svg)
 
 > The schema shows how blocks interact with eachother.
 
@@ -99,7 +99,7 @@ Only the App knows Plugins URLs and resolves routes so that plugins do not have 
 
 ### Backend
 
-![](./Overview_img/backend.svg) 
+![img](./Overview_img/backend.svg)
 
 > The diagram shows how blocks interact with eachother.
 
@@ -121,7 +121,7 @@ git shortlog -sn | wc -l
 
 ### Languages
 
-![](./Overview_img/code.png)
+![img](./Overview_img/code.png)
 
 Using _tokei_ with this command gives the following output which is the total amount of files, lines of code without comments and blanks.
 
@@ -129,7 +129,7 @@ Using _tokei_ with this command gives the following output which is the total am
 tokei .
 ```
 
-![](./Overview_img/sum.png)
+![img](./Overview_img/sum.png)
 
 Using the following command the output is just the application code without documentation, infrastructure and configuration.
 
@@ -138,11 +138,11 @@ Using the following command the output is just the application code without docu
 tokei . -t TypeScript,TSX,CSS,Handlebars,JavaScript,Sass,JSX,Mustache,HTML
 ```
 
-![](./Overview_img/pure_code.png)
+![img](./Overview_img/pure_code.png)
 
 Considering Markdown, PlanText and MDX as documentation; JSON, YAML, Shell, PowerShell, HCL,PAN, Dockerfile and Makefile as configuration and infrastructure the ratios are the following:
 
-![](./Overview_img/chart.png)
+![img](./Overview_img/chart.png)
 
 Using the following command to find the number of packages except external dependencies.
 
