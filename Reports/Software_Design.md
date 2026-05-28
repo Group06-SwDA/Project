@@ -129,7 +129,7 @@ The pairs in the hidden dependencies quadrant are frequently committed together 
 ![](./Software_Deisgn_img/focused_hidden_dep.png)
 
 The pairs in the stale import quadrant have a static import relationship but rarely appear in the same commit. Two interpretations are possible. The first is positive: the imported module is a stable abstraction that encapsulates change well, so the importing file almost never needs updating when the dependency changes. The second may be unsafe: the import may be vestigial so it was declared in the past but it is no longer actively used.
-
+![](./Software_Deisgn_img/focused_stale_import.png)
 
 ## Design Patterns
 
