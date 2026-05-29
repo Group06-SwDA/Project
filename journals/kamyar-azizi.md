@@ -95,3 +95,15 @@ npx madge packages/app/src --json > module-dependencies.json
 ### 2026-05-11
 
 - Started reviewing other team members’ work and became more involved in understanding the architecture side of the project.
+
+### 2026-05-22
+
+- Reviewed the C4 diagram with the professor, discussed architectural decisions, and gathered feedback for the final refinements.
+
+### 2026-05-28
+
+- Held a final team meeting to consolidate all project components, resolve remaining integration issues, and merge the completed work into the main branch.
+
+### 2026-06-29
+
+- Made minor changes to the project documentation.
