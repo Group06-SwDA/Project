@@ -2,7 +2,6 @@
 
 ## Author: Giulia Guarino
 
-
 ### 2026-04-10
 
 - Team meeting: decided to spend the first week reading the documentation and understanding the codebase.
@@ -16,7 +15,7 @@
 ### 2026-04-15
 
 - Read documentation and took some notes.
-- Installed and configured _Backstage_ to familiarize with it. 
+- Installed and configured _Backstage_ to familiarize with it.
 
 ### 2026-04-17
 
@@ -49,7 +48,7 @@
 
 ### 2026-05-01 - 2026-05-04
 
-- Analysed the results of other members of the team to start writing `Software_Design.md`. 
+- Analysed the results of other members of the team to start writing `Software_Design.md`.
 
 ### 2026-05-05
 
@@ -85,4 +84,13 @@ Evaluated the method to compare both types of dependencies.
 ### 2026-05-17
 
 - Produced PUML for alternative template pattern and updated the paragraph.
-- Finished Software_Design.md
+- Finished Software_Design.md.
+
+### 2026-05-20/21
+
+- Revisioned and added some clarifications.
+
+### 2026-05-28
+
+- Team meeting.
+- Fixed some .md warnings.
