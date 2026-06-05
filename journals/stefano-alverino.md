@@ -92,3 +92,11 @@
 
 - Reviewing design report
 - Reviewed some errors in knowledge dependencies
+
+## 2026-05-22
+
+- Meeting with  professor Vetrò about C4 diagrams revision.
+
+### 2026-06-05
+
+- Entire project review
