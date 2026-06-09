@@ -10,7 +10,7 @@ In a `package.json`, dependencies split into two camps: `"dependencies"` are nee
 
 ## 🛠️ How I Approached It
 
-I wrote a script called `extract-runtime.js` to automate the extraction process, since going through 228 packages by hand wasn't realistic. The script clones the Backstage repository, walks through every package folder, and pulls the `"dependencies"` field from each `package.json` it finds. It skips `node_modules` directories — otherwise the results would be polluted with transitive noise.
+I wrote a script called `extract-runtime.js` to automate the extraction process, since going through every package by hand wasn't realistic. The script clones the Backstage repository, walks through every package folder, and pulls the `"dependencies"` field from each `package.json` it finds. It skips `node_modules` directories — otherwise the results would be polluted with transitive noise.
 
 The output is a file called `runtime-deps.json`, which maps every package to its runtime dependencies.
 
@@ -18,11 +18,11 @@ The output is a file called `runtime-deps.json`, which maps every package to its
 node extract-runtime.js
 ```
 
-One thing worth noting: the script only captures *direct* runtime dependencies — what each package explicitly declares. Transitive dependencies (dependencies of dependencies) aren't in scope here, though they'd be the natural next step if this analysis were extended.
+One thing worth noting: the script only captures *direct* runtime dependencies — what each package explicitly declares. It also only records packages that have at least one runtime dependency, so packages with no `"dependencies"` field are not included in the output. Transitive dependencies aren't in scope here, though they'd be the natural next step if this analysis were extended.
 
 ## 📊 Numbers
 
-- **228 packages** scanned in total
+- **228 packages** were found to have runtime dependencies
 - Results saved to `runtime-deps.json`
 
 ## 🧠 What I Found
