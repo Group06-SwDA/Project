@@ -48,7 +48,6 @@
 ### 2026-04-22
 
 - Designed and built the knowledge dependency graph
-- Applied Louvain clustering (chosen for scalability and ability to detect communities in large graphs)
 - Generated the final diagram
 - Started validating the correctness of the extracted data (ongoing)
 
@@ -65,15 +64,10 @@
 - Identified instances of the Observer pattern and Fluent Builder pattern
 - Designed a workflow diagram illustrating the knowledge dependency analysis pipeline
 
-### 2026-05-04
-
-- Wrote explanations of design patterns
-- Created UML class diagrams to illustrate and explain the patterns
-
 ### 2026-05-05
 
 - Analyzed code dependencies with madge with Giulia
-- Produced some graphs about code dependencies with Giulia
+- Produced some graphs about code dependencies
 - Reviewed knowledge dependencies with Giulia
 
 ### 2026-05-09
